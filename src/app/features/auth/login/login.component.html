@@ -2,12 +2,14 @@
   <div class="login-card">
 
     <!-- LOGO -->
-    <div style="text-align:center; margin-bottom:24px;">
+    <div style="text-align:center; margin-bottom:28px;">
       <img src="assets/logo-esve.jpg" alt="ESVE"
-           style="width:60px; height:60px; border-radius:8px;
+           style="width:64px; height:64px; border-radius:10px;
                   object-fit:contain; background:#1A1A2E; padding:4px;">
-      <h2 style="color:#1A1A2E; margin:8px 0 0 0;">Connexion ESVE</h2>
-      <p style="color:#757575; font-size:13px; margin:4px 0 0 0;">
+      <h2 style="color:#1A1A2E; margin:10px 0 4px 0; font-size:22px; font-weight:900;">
+        ESVE-GESTION
+      </h2>
+      <p style="color:#757575; font-size:13px; margin:0;">
         Accédez à votre espace personnel
       </p>
     </div>
@@ -17,8 +19,7 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nom d'utilisateur</mat-label>
-        <input matInput formControlName="email"
-               placeholder="Ex: jean.dupont">
+        <input matInput formControlName="email" placeholder="Ex: jean.dupont">
         <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
           Nom d'utilisateur requis
         </mat-error>
@@ -36,26 +37,32 @@
         {{ errorMessage }}
       </div>
 
-      <button mat-raised-button color="primary" type="submit"
+      <button mat-raised-button type="submit"
               [disabled]="loginForm.invalid || isLoading"
-              style="width:100%; margin-bottom:16px;">
+              style="width:100%; padding:12px; background:#1A1A2E;
+                     color:white; font-size:15px; font-weight:bold;
+                     border-radius:8px; margin-bottom:12px;">
         {{ isLoading ? 'Connexion...' : 'Se connecter' }}
       </button>
 
-      <div style="text-align:center;">
-        <p style="color:#757575; font-size:13px; margin:0 0 8px 0;">
-          Pas encore de compte ?
-        </p>
-        <button type="button" mat-stroked-button
-                (click)="showInscription = true"
-                style="width:100%; color:#D4830A; border-color:#D4830A;">
-          Créer mon compte gratuitement
-        </button>
+      <!-- Séparateur -->
+      <div style="display:flex; align-items:center; gap:12px; margin:16px 0;">
+        <div style="flex:1; height:1px; background:#E0E0E0;"></div>
+        <span style="color:#999; font-size:13px;">ou</span>
+        <div style="flex:1; height:1px; background:#E0E0E0;"></div>
       </div>
 
-      <div style="text-align:center; margin-top:16px;">
+      <button type="button" mat-raised-button
+              (click)="showInscription = true"
+              style="width:100%; padding:12px; background:#D4830A;
+                     color:white; font-size:15px; font-weight:bold;
+                     border-radius:8px; margin-bottom:16px; border:none; cursor:pointer;">
+        🚀 Créer mon compte gratuitement
+      </button>
+
+      <div style="text-align:center;">
         <a routerLink="/vitrine"
-           style="color:#757575; text-decoration:none; font-size:13px;">
+           style="color:#D4830A; text-decoration:none; font-size:13px;">
           ← Retour à la page d'accueil
         </a>
       </div>
@@ -65,7 +72,7 @@
     <!-- FORMULAIRE INSCRIPTION -->
     <form *ngIf="showInscription" [formGroup]="inscriptionForm" (ngSubmit)="onInscription()">
 
-      <h3 style="color:#1A1A2E; margin:0 0 16px 0; font-size:18px;">
+      <h3 style="color:#1A1A2E; margin:0 0 20px 0; font-size:18px; font-weight:bold;">
         Créer mon compte
       </h3>
 
@@ -101,12 +108,14 @@
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Nom d'utilisateur *</mat-label>
           <input matInput formControlName="username" placeholder="jean.dupont">
+          <mat-hint>Utilisé pour la connexion</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Email *</mat-label>
           <input matInput type="email" formControlName="email"
                  placeholder="jean@entreprise.com">
+          <mat-hint>Doit correspondre à votre email dans nos fichiers</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -115,14 +124,12 @@
                  placeholder="••••••">
         </mat-form-field>
 
-        <div *ngIf="inscriptionError"
-             style="color:#B71C1C; font-size:13px; margin-bottom:12px;">
-          {{ inscriptionError }}
-        </div>
-
         <button mat-raised-button type="submit"
                 [disabled]="inscriptionForm.invalid || inscriptionLoading"
-                style="width:100%; background:#D4830A; color:white; margin-bottom:12px;">
+                [style.opacity]="inscriptionForm.invalid || inscriptionLoading ? '0.6' : '1'"
+                style="width:100%; padding:12px; background:#D4830A;
+                       color:white; font-size:15px; font-weight:bold;
+                       border-radius:8px; margin-bottom:12px;">
           {{ inscriptionLoading ? '⏳ Création...' : '🚀 Créer mon compte' }}
         </button>
       </div>
@@ -136,6 +143,21 @@
       </div>
 
     </form>
+
+    <!-- FOOTER -->
+    <div style="margin-top:28px; padding-top:20px;
+                border-top:1px solid #F0F0F0; text-align:center;">
+      <p style="color:#BDBDBD; font-size:11px; margin:0 0 4px 0; line-height:1.6;">
+        Application développée par
+        <strong style="color:#999;">Soulama Moumouni Abdoul Wahid</strong>
+        &amp;
+        <strong style="color:#999;">Koné Rachid</strong>
+      </p>
+      <p style="color:#BDBDBD; font-size:11px; margin:0; line-height:1.6;">
+        Étudiants en 3ème année de Licence — Génie Logiciel<br>
+        Université Virtuelle du Burkina Faso 🇧🇫
+      </p>
+    </div>
 
   </div>
 </div>
