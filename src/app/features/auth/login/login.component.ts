@@ -66,19 +66,32 @@ export class LoginComponent {
   }
 
   onInscription(): void {
-    if (this.inscriptionForm.invalid) return;
-    this.inscriptionLoading = true;
-    this.inscriptionError   = '';
+  if (this.inscriptionForm.invalid) return;
+  this.inscriptionLoading = true;
+  this.inscriptionError   = '';
 
-    this.http.post('/api/v1/auth/register/', this.inscriptionForm.value).subscribe({
-      next: () => {
-        this.inscriptionSuccess = true;
-        this.inscriptionLoading = false;
-      },
-      error: (e) => {
-        this.inscriptionError   = 'Erreur : ' + JSON.stringify(e.error);
-        this.inscriptionLoading = false;
-      }
-    });
-  }
+  this.http.post('/api/v1/auth/register/', this.inscriptionForm.value).subscribe({
+    next: () => {
+      // Connexion automatique après inscription
+      const username = this.inscriptionForm.value.username;
+      const password = this.inscriptionForm.value.password;
+
+      this.authService.login(username, password).subscribe({
+        next: () => {
+          this.inscriptionLoading = false;
+          this.router.navigate(['/dashboard']);
+        },
+        error: () => {
+          // Si login auto échoue, afficher succès et rediriger vers login
+          this.inscriptionSuccess = true;
+          this.inscriptionLoading = false;
+        }
+      });
+    },
+    error: (e) => {
+      this.inscriptionError   = 'Erreur : ' + JSON.stringify(e.error);
+      this.inscriptionLoading = false;
+    }
+  });
+}
 }
