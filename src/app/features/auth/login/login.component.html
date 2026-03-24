@@ -1,13 +1,24 @@
 <div class="login-container">
   <div class="login-card">
-    <h2>Connexion ESVE</h2>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <!-- LOGO -->
+    <div style="text-align:center; margin-bottom:24px;">
+      <img src="assets/logo-esve.jpg" alt="ESVE"
+           style="width:60px; height:60px; border-radius:8px;
+                  object-fit:contain; background:#1A1A2E; padding:4px;">
+      <h2 style="color:#1A1A2E; margin:8px 0 0 0;">Connexion ESVE</h2>
+      <p style="color:#757575; font-size:13px; margin:4px 0 0 0;">
+        Accédez à votre espace personnel
+      </p>
+    </div>
+
+    <!-- FORMULAIRE LOGIN -->
+    <form *ngIf="!showInscription" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Nom d'utilisateur ou Email</mat-label>
+        <mat-label>Nom d'utilisateur</mat-label>
         <input matInput formControlName="email"
-               placeholder="Ex: jean.dupont ou esve@esve.com">
+               placeholder="Ex: jean.dupont">
         <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
           Nom d'utilisateur requis
         </mat-error>
@@ -26,17 +37,105 @@
       </div>
 
       <button mat-raised-button color="primary" type="submit"
-              [disabled]="loginForm.invalid || isLoading">
+              [disabled]="loginForm.invalid || isLoading"
+              style="width:100%; margin-bottom:16px;">
         {{ isLoading ? 'Connexion...' : 'Se connecter' }}
       </button>
 
+      <div style="text-align:center;">
+        <p style="color:#757575; font-size:13px; margin:0 0 8px 0;">
+          Pas encore de compte ?
+        </p>
+        <button type="button" mat-stroked-button
+                (click)="showInscription = true"
+                style="width:100%; color:#D4830A; border-color:#D4830A;">
+          Créer mon compte gratuitement
+        </button>
+      </div>
+
       <div style="text-align:center; margin-top:16px;">
         <a routerLink="/vitrine"
-           style="color:#D4830A; text-decoration:none; font-size:13px;">
+           style="color:#757575; text-decoration:none; font-size:13px;">
           ← Retour à la page d'accueil
         </a>
       </div>
 
     </form>
+
+    <!-- FORMULAIRE INSCRIPTION -->
+    <form *ngIf="showInscription" [formGroup]="inscriptionForm" (ngSubmit)="onInscription()">
+
+      <h3 style="color:#1A1A2E; margin:0 0 16px 0; font-size:18px;">
+        Créer mon compte
+      </h3>
+
+      <div *ngIf="inscriptionSuccess"
+           style="background:#E8F5E9; border:1px solid #2E7D32; border-radius:8px;
+                  padding:16px; text-align:center; margin-bottom:16px;">
+        <p style="color:#2E7D32; font-weight:bold; margin:0 0 4px 0;">
+          🎉 Compte créé avec succès !
+        </p>
+        <p style="color:#555; font-size:13px; margin:0;">
+          Vous pouvez maintenant vous connecter
+        </p>
+      </div>
+
+      <div *ngIf="inscriptionError"
+           style="background:#FFEBEE; color:#B71C1C; padding:12px;
+                  border-radius:6px; margin-bottom:16px; font-size:13px;">
+        {{ inscriptionError }}
+      </div>
+
+      <div *ngIf="!inscriptionSuccess">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <mat-form-field appearance="outline">
+            <mat-label>Prénom *</mat-label>
+            <input matInput formControlName="first_name" placeholder="Jean">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Nom</mat-label>
+            <input matInput formControlName="last_name" placeholder="Dupont">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nom d'utilisateur *</mat-label>
+          <input matInput formControlName="username" placeholder="jean.dupont">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email *</mat-label>
+          <input matInput type="email" formControlName="email"
+                 placeholder="jean@entreprise.com">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe * (min. 6 caractères)</mat-label>
+          <input matInput type="password" formControlName="password"
+                 placeholder="••••••">
+        </mat-form-field>
+
+        <div *ngIf="inscriptionError"
+             style="color:#B71C1C; font-size:13px; margin-bottom:12px;">
+          {{ inscriptionError }}
+        </div>
+
+        <button mat-raised-button type="submit"
+                [disabled]="inscriptionForm.invalid || inscriptionLoading"
+                style="width:100%; background:#D4830A; color:white; margin-bottom:12px;">
+          {{ inscriptionLoading ? '⏳ Création...' : '🚀 Créer mon compte' }}
+        </button>
+      </div>
+
+      <div style="text-align:center;">
+        <button type="button" mat-button
+                (click)="showInscription = false"
+                style="color:#757575; font-size:13px;">
+          ← Retour à la connexion
+        </button>
+      </div>
+
+    </form>
+
   </div>
 </div>
