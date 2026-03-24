@@ -1,0 +1,42 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Connexion ESVE</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nom d'utilisateur ou Email</mat-label>
+        <input matInput formControlName="email"
+               placeholder="Ex: jean.dupont ou esve@esve.com">
+        <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          Nom d'utilisateur requis
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="password" formControlName="password">
+        <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          Mot de passe requis
+        </mat-error>
+      </mat-form-field>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <button mat-raised-button color="primary" type="submit"
+              [disabled]="loginForm.invalid || isLoading">
+        {{ isLoading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+
+      <div style="text-align:center; margin-top:16px;">
+        <a routerLink="/vitrine"
+           style="color:#D4830A; text-decoration:none; font-size:13px;">
+          ← Retour à la page d'accueil
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>

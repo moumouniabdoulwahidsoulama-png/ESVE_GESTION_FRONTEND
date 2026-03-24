@@ -1,0 +1,124 @@
+<div style="padding: 24px;">
+
+  <!-- HEADER -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <h1 style="margin:0;">Factures & Proformas</h1>
+    <a mat-raised-button color="primary" routerLink="/factures/new"
+       style="background-color:#D4830A; color:white;">
+      + Nouvelle facture
+    </a>
+  </div>
+
+  <!-- CHARGEMENT -->
+  <div *ngIf="isLoading" style="text-align:center; padding:40px;">
+    Chargement...
+  </div>
+
+  <!-- ERREUR -->
+  <div *ngIf="errorMessage" style="color:red; padding:16px;">
+    {{ errorMessage }}
+  </div>
+
+  <!-- TABLEAU -->
+  <div *ngIf="!isLoading && !errorMessage">
+
+    <div *ngIf="factures.length === 0" style="text-align:center; padding:40px; color:#999;">
+      Aucune facture pour le moment.
+    </div>
+
+    <mat-table [dataSource]="factures" *ngIf="factures.length > 0">
+
+      <!-- Numéro -->
+      <ng-container matColumnDef="numero">
+        <mat-header-cell *matHeaderCellDef> Numéro </mat-header-cell>
+        <mat-cell *matCellDef="let f">
+          <strong style="color:#D4830A;">{{ f.numero }}</strong>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Client -->
+      <ng-container matColumnDef="client">
+        <mat-header-cell *matHeaderCellDef> Client </mat-header-cell>
+        <mat-cell *matCellDef="let f">
+          {{ f.client_detail?.nom_entreprise || f.client }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Type -->
+      <ng-container matColumnDef="type_doc">
+        <mat-header-cell *matHeaderCellDef> Type </mat-header-cell>
+        <mat-cell *matCellDef="let f">
+          <span [style.background]="f.type_doc === 'PROFORMA' ? '#FFF3E0' : '#E8F5E9'"
+                [style.color]="f.type_doc === 'PROFORMA' ? '#E65100' : '#2E7D32'"
+                style="padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">
+            {{ f.type_doc }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Statut -->
+      <ng-container matColumnDef="statut">
+        <mat-header-cell *matHeaderCellDef> Statut </mat-header-cell>
+        <mat-cell *matCellDef="let f">
+          <span style="padding:4px 10px; border-radius:12px; font-size:12px;
+                       background:#E3F2FD; color:#1565C0; font-weight:bold;">
+            {{ f.statut }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Total net -->
+      <ng-container matColumnDef="total_net">
+        <mat-header-cell *matHeaderCellDef> Total Net </mat-header-cell>
+        <mat-cell *matCellDef="let f">
+          <strong>{{ f.total_net | number:'1.0-0' }} FCFA</strong>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+        <mat-cell *matCellDef="let f">
+
+          <!-- Valider proforma -->
+          <button mat-icon-button
+                  *ngIf="f.type_doc === 'PROFORMA' && f.statut !== 'VALIDE' && f.statut !== 'ANNULE'"
+                  (click)="validerProforma(f.id)"
+                  title="Valider la proforma"
+                  style="color:#2E7D32;">
+            <mat-icon>check_circle</mat-icon>
+          </button>
+
+          <!-- Télécharger PDF -->
+          <button mat-icon-button
+                  (click)="telechargerPdf(f.id, f.numero)"
+                  title="Télécharger PDF"
+                  style="color:#1565C0;">
+            <mat-icon>picture_as_pdf</mat-icon>
+          </button>
+
+          <!-- Modifier -->
+          <button mat-icon-button
+                  [routerLink]="['/factures', f.id, 'edit']"
+                  title="Modifier"
+                  style="color:#D4830A;">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <!-- Supprimer -->
+          <button mat-icon-button
+                  (click)="deleteFacture(f.id)"
+                  title="Supprimer"
+                  style="color:#B71C1C;">
+            <mat-icon>delete</mat-icon>
+          </button>
+
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+    </mat-table>
+  </div>
+</div>

@@ -1,0 +1,761 @@
+<div style="font-family: Arial, sans-serif; color:#1A1A2E;">
+
+  <!-- NAVBAR -->
+  <nav style="background:#1A1A2E; padding:16px 40px; display:flex;
+              justify-content:space-between; align-items:center;
+              position:sticky; top:0; z-index:100;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <img src="assets/logo-esve.jpg" alt="ESVE"
+           style="width:45px; height:45px; border-radius:8px;
+                  object-fit:contain; background:white; padding:2px;">
+      <div>
+        <span style="color:#D4830A; font-size:22px; font-weight:900; letter-spacing:2px;">ESVE</span>
+        <span style="color:rgba(255,255,255,0.5); font-size:11px; display:block;">Digital Solutions</span>
+      </div>
+    </div>
+    <div style="display:flex; gap:16px; align-items:center;">
+      <a (click)="scrollTo('services')"
+         style="color:rgba(255,255,255,0.7); text-decoration:none;
+                font-size:14px; cursor:pointer;">Services</a>
+      <a (click)="scrollTo('fonctionnalites')"
+         style="color:rgba(255,255,255,0.7); text-decoration:none;
+                font-size:14px; cursor:pointer;">Fonctionnalités</a>
+      <a (click)="scrollTo('contact')"
+         style="color:rgba(255,255,255,0.7); text-decoration:none;
+                font-size:14px; cursor:pointer;">Contact</a>
+      <a routerLink="/login"
+         style="color:rgba(255,255,255,0.7); padding:8px 16px;
+                border-radius:6px; text-decoration:none; font-size:14px;
+                border:1px solid rgba(255,255,255,0.3);">
+        Connexion
+      </a>
+      <button (click)="showInscription = true"
+              style="background:#D4830A; color:white; padding:8px 20px;
+                     border-radius:6px; border:none; font-size:14px;
+                     font-weight:bold; cursor:pointer;">
+        Créer mon compte
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section style="background:linear-gradient(135deg, #1A1A2E 0%, #2D2D4E 50%, #1A1A2E 100%);
+                  padding:80px 40px; text-align:center; min-height:80vh;
+                  display:flex; flex-direction:column; align-items:center; justify-content:center;">
+
+    <div style="background:rgba(212,131,10,0.15); border:1px solid #D4830A;
+                padding:8px 20px; border-radius:20px;
+                display:inline-block; margin-bottom:24px;">
+      <span style="color:#D4830A; font-size:13px; font-weight:bold;">
+        ✦ Agence Digitale 100% Burkinabè ✦
+      </span>
+    </div>
+
+    <h1 style="color:white; font-size:52px; font-weight:900; margin:0 0 16px 0;
+               line-height:1.2; max-width:900px;">
+      Applications • Sites Web • Design
+      <span style="color:#D4830A;">Sur Mesure</span>
+    </h1>
+
+    <p style="color:rgba(255,255,255,0.7); font-size:18px; max-width:650px;
+              margin:0 0 40px 0; line-height:1.6;">
+      ESVE Digital Solutions conçoit et développe vos outils numériques :
+      applications de gestion, sites web professionnels, applications mobiles,
+      affiches et identité visuelle.
+    </p>
+
+    <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+      <a (click)="scrollTo('contact')"
+         style="background:#D4830A; color:white; padding:16px 36px;
+                border-radius:8px; text-decoration:none; font-size:16px;
+                font-weight:bold; cursor:pointer;
+                box-shadow:0 4px 20px rgba(212,131,10,0.4);">
+        🚀 Démarrer mon projet
+      </a>
+      <a (click)="scrollTo('services')"
+         style="background:rgba(255,255,255,0.1); color:white; padding:16px 36px;
+                border-radius:8px; text-decoration:none; font-size:16px;
+                cursor:pointer; border:1px solid rgba(255,255,255,0.3);">
+        👁 Voir nos services
+      </a>
+      <a (click)="showInscription = true"
+         style="background:rgba(255,255,255,0.15); color:white; padding:16px 36px;
+                border-radius:8px; text-decoration:none; font-size:16px;
+                cursor:pointer; border:1px solid rgba(255,255,255,0.4);">
+        👤 Créer mon compte
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:flex; gap:40px; margin-top:60px;
+                flex-wrap:wrap; justify-content:center;">
+      <div style="text-align:center;">
+        <p style="color:#D4830A; font-size:36px; font-weight:900; margin:0;">100%</p>
+        <p style="color:rgba(255,255,255,0.5); font-size:13px; margin:0;">Sur mesure</p>
+      </div>
+      <div style="text-align:center;">
+        <p style="color:#D4830A; font-size:36px; font-weight:900; margin:0;">30j</p>
+        <p style="color:rgba(255,255,255,0.5); font-size:13px; margin:0;">Délai moyen</p>
+      </div>
+      <div style="text-align:center;">
+        <p style="color:#D4830A; font-size:36px; font-weight:900; margin:0;">24/7</p>
+        <p style="color:rgba(255,255,255,0.5); font-size:13px; margin:0;">Support</p>
+      </div>
+      <div style="text-align:center;">
+        <p style="color:#D4830A; font-size:36px; font-weight:900; margin:0;">BF</p>
+        <p style="color:rgba(255,255,255,0.5); font-size:13px; margin:0;">Expertise locale</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOS SERVICES -->
+  <section id="services" style="padding:80px 40px; background:#1A1A2E;">
+    <div style="max-width:1200px; margin:0 auto;">
+      <h2 style="text-align:center; font-size:36px; color:white; margin-bottom:8px;">
+        Nos Services Digitaux
+      </h2>
+      <p style="text-align:center; color:rgba(255,255,255,0.5);
+                margin-bottom:48px; font-size:16px;">
+        Tout ce dont votre entreprise a besoin pour réussir sa transformation digitale
+      </p>
+
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;">
+
+        <!-- Application Web -->
+        <div style="background:rgba(255,255,255,0.05); border-radius:16px; padding:32px;
+                    border:1px solid rgba(212,131,10,0.3);
+                    border-top:4px solid #D4830A;">
+          <div style="font-size:48px; margin-bottom:16px;">💻</div>
+          <h3 style="color:#D4830A; font-size:20px; margin:0 0 12px 0;">
+            Applications Web
+          </h3>
+          <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin:0 0 16px 0;">
+            Logiciels de gestion sur mesure : facturation, stocks, RH, comptabilité, CRM, ERP.
+            Accessibles depuis n'importe quel navigateur.
+          </p>
+          <ul style="color:rgba(255,255,255,0.5); font-size:13px; padding-left:16px; margin:0;">
+            <li>Gestion commerciale</li>
+            <li>Facturation & comptabilité</li>
+            <li>Suivi de projets</li>
+            <li>Tableaux de bord</li>
+          </ul>
+        </div>
+
+        <!-- Application Mobile -->
+        <div style="background:rgba(255,255,255,0.05); border-radius:16px; padding:32px;
+                    border:1px solid rgba(21,101,192,0.3);
+                    border-top:4px solid #1565C0;">
+          <div style="font-size:48px; margin-bottom:16px;">📱</div>
+          <h3 style="color:#1565C0; font-size:20px; margin:0 0 12px 0;">
+            Applications Mobiles
+          </h3>
+          <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin:0 0 16px 0;">
+            Applications Android & iOS pour votre équipe terrain et vos clients.
+            Synchronisation en temps réel avec vos systèmes.
+          </p>
+          <ul style="color:rgba(255,255,255,0.5); font-size:13px; padding-left:16px; margin:0;">
+            <li>Android & iOS</li>
+            <li>Suivi terrain</li>
+            <li>Commandes mobile</li>
+            <li>Notifications push</li>
+          </ul>
+        </div>
+
+        <!-- Site Web -->
+        <div style="background:rgba(255,255,255,0.05); border-radius:16px; padding:32px;
+                    border:1px solid rgba(46,125,50,0.3);
+                    border-top:4px solid #2E7D32;">
+          <div style="font-size:48px; margin-bottom:16px;">🌐</div>
+          <h3 style="color:#2E7D32; font-size:20px; margin:0 0 12px 0;">
+            Sites Web Professionnels
+          </h3>
+          <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin:0 0 16px 0;">
+            Sites vitrines modernes, e-commerce et portfolios pour renforcer
+            votre présence en ligne et attirer de nouveaux clients.
+          </p>
+          <ul style="color:rgba(255,255,255,0.5); font-size:13px; padding-left:16px; margin:0;">
+            <li>Site vitrine</li>
+            <li>E-commerce</li>
+            <li>Blog professionnel</li>
+            <li>SEO inclus</li>
+          </ul>
+        </div>
+
+        <!-- Design Affiches -->
+        <div style="background:rgba(255,255,255,0.05); border-radius:16px; padding:32px;
+                    border:1px solid rgba(106,27,154,0.3);
+                    border-top:4px solid #6A1B9A;">
+          <div style="font-size:48px; margin-bottom:16px;">🎨</div>
+          <h3 style="color:#9C27B0; font-size:20px; margin:0 0 12px 0;">
+            Affiches & Flyers
+          </h3>
+          <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin:0 0 16px 0;">
+            Création d'affiches publicitaires, flyers, banderoles et supports
+            marketing impactants pour vos événements et promotions.
+          </p>
+          <ul style="color:rgba(255,255,255,0.5); font-size:13px; padding-left:16px; margin:0;">
+            <li>Affiches publicitaires</li>
+            <li>Flyers & brochures</li>
+            <li>Banderoles</li>
+            <li>Cartes de visite</li>
+          </ul>
+        </div>
+
+        <!-- Logo & Identité -->
+        <div style="background:rgba(255,255,255,0.05); border-radius:16px; padding:32px;
+                    border:1px solid rgba(183,28,28,0.3);
+                    border-top:4px solid #B71C1C;">
+          <div style="font-size:48px; margin-bottom:16px;">✏️</div>
+          <h3 style="color:#E53935; font-size:20px; margin:0 0 12px 0;">
+            Logo & Identité Visuelle
+          </h3>
+          <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin:0 0 16px 0;">
+            Création de logos professionnels et charte graphique complète
+            pour donner une image forte et cohérente à votre entreprise.
+          </p>
+          <ul style="color:rgba(255,255,255,0.5); font-size:13px; padding-left:16px; margin:0;">
+            <li>Logo professionnel</li>
+            <li>Charte graphique</li>
+            <li>Carte de visite</li>
+            <li>En-tête & signature</li>
+          </ul>
+        </div>
+
+        <!-- Pack Complet -->
+        <div style="background:linear-gradient(135deg, rgba(212,131,10,0.2), rgba(212,131,10,0.05));
+                    border-radius:16px; padding:32px;
+                    border:2px solid #D4830A;">
+          <div style="font-size:48px; margin-bottom:16px;">🏆</div>
+          <h3 style="color:#D4830A; font-size:20px; margin:0 0 12px 0;">
+            Pack Digital Complet
+          </h3>
+          <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin:0 0 16px 0;">
+            Site web + Application + Logo + Affiches.
+            La solution tout-en-un pour lancer ou moderniser
+            votre présence digitale à prix réduit.
+          </p>
+          <ul style="color:rgba(255,255,255,0.5); font-size:13px; padding-left:16px; margin:0;">
+            <li>✅ Site web vitrine</li>
+            <li>✅ Application web</li>
+            <li>✅ Logo + charte</li>
+            <li>✅ Support 6 mois</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FONCTIONNALITÉS APP GESTION -->
+  <section id="fonctionnalites" style="padding:80px 40px; background:#F5F5F5;">
+    <div style="max-width:1100px; margin:0 auto;">
+      <h2 style="text-align:center; font-size:36px; color:#1A1A2E; margin-bottom:8px;">
+        Notre application phare — ESVE-Gestion
+      </h2>
+      <p style="text-align:center; color:#757575; margin-bottom:48px; font-size:16px;">
+        Exemple concret d'application que nous pouvons développer pour vous
+      </p>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;">
+        <div *ngFor="let f of fonctionnalites"
+             style="background:white; border-radius:12px; padding:28px;
+                    box-shadow:0 2px 12px rgba(0,0,0,0.06);
+                    border-top:4px solid #D4830A;">
+          <div style="font-size:36px; margin-bottom:16px;">{{ f.icon }}</div>
+          <h3 style="color:#1A1A2E; font-size:18px; margin:0 0 8px 0;">{{ f.titre }}</h3>
+          <p style="color:#757575; font-size:14px; line-height:1.6; margin:0;">{{ f.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POURQUOI ESVE -->
+  <section style="padding:80px 40px; background:white;">
+    <div style="max-width:1000px; margin:0 auto; text-align:center;">
+      <h2 style="font-size:36px; color:#1A1A2E; margin-bottom:16px;">
+        Pourquoi choisir ESVE Digital ?
+      </h2>
+      <p style="color:#757575; font-size:16px; margin-bottom:48px;">
+        Nous comprenons les réalités du marché burkinabè et africain
+      </p>
+
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:24px;">
+        <div style="padding:24px; background:#F5F5F5; border-radius:12px;">
+          <p style="font-size:36px; margin:0 0 12px 0;">🇧🇫</p>
+          <h4 style="color:#1A1A2E; margin:0 0 8px 0;">Expertise locale</h4>
+          <p style="color:#757575; font-size:13px; margin:0;">
+            Nous connaissons les contraintes fiscales et légales du Burkina Faso
+          </p>
+        </div>
+        <div style="padding:24px; background:#F5F5F5; border-radius:12px;">
+          <p style="font-size:36px; margin:0 0 12px 0;">💰</p>
+          <h4 style="color:#1A1A2E; margin:0 0 8px 0;">Prix abordables</h4>
+          <p style="color:#757575; font-size:13px; margin:0;">
+            Des tarifs adaptés au marché africain sans compromis sur la qualité
+          </p>
+        </div>
+        <div style="padding:24px; background:#F5F5F5; border-radius:12px;">
+          <p style="font-size:36px; margin:0 0 12px 0;">⚡</p>
+          <h4 style="color:#1A1A2E; margin:0 0 8px 0;">Livraison rapide</h4>
+          <p style="color:#757575; font-size:13px; margin:0;">
+            Délai moyen de 2 à 4 semaines pour une application complète
+          </p>
+        </div>
+        <div style="padding:24px; background:#F5F5F5; border-radius:12px;">
+          <p style="font-size:36px; margin:0 0 12px 0;">🔧</p>
+          <h4 style="color:#1A1A2E; margin:0 0 8px 0;">Support continu</h4>
+          <p style="color:#757575; font-size:13px; margin:0;">
+            Maintenance et mises à jour incluses après la livraison
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULAIRE CONTACT -->
+  <section id="contact" style="padding:80px 40px; background:#F5F5F5;">
+    <div style="max-width:700px; margin:0 auto;">
+      <h2 style="text-align:center; font-size:36px; color:#1A1A2E; margin-bottom:8px;">
+        Décrivez votre projet
+      </h2>
+      <p style="text-align:center; color:#757575; font-size:16px; margin-bottom:40px;">
+        Remplissez ce formulaire et nous vous contacterons sous 24h avec un devis personnalisé
+      </p>
+
+      <div *ngIf="isSuccess"
+           style="background:#E8F5E9; border:1px solid #2E7D32; border-radius:12px;
+                  padding:24px; text-align:center; margin-bottom:24px;">
+        <p style="font-size:24px; margin:0 0 8px 0;">🎉</p>
+        <p style="color:#2E7D32; font-size:18px; font-weight:bold; margin:0 0 4px 0;">
+          Demande envoyée avec succès !
+        </p>
+        <p style="color:#555; margin:0;">Notre équipe vous contactera dans les 24 heures.</p>
+      </div>
+
+      <div *ngIf="errorMessage"
+           style="background:#FFEBEE; border:1px solid #B71C1C; border-radius:8px;
+                  padding:16px; margin-bottom:16px; color:#B71C1C;">
+        {{ errorMessage }}
+      </div>
+
+      <form *ngIf="!isSuccess" [formGroup]="demandeForm" (ngSubmit)="onSubmit()"
+            style="background:white; border-radius:16px; padding:40px;
+                   box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+        <h3 style="color:#D4830A; border-bottom:2px solid #D4830A;
+                   padding-bottom:8px; margin-bottom:20px;">
+          👤 Vos informations
+        </h3>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div>
+            <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">
+              Nom de l'entreprise *
+            </label>
+            <input formControlName="nom_entreprise" placeholder="Ex: Mon Entreprise SARL"
+                   style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                          border-radius:6px; font-size:14px; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">
+              Votre nom *
+            </label>
+            <input formControlName="nom_contact" placeholder="Ex: Jean Dupont"
+                   style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                          border-radius:6px; font-size:14px; box-sizing:border-box;">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div>
+            <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">
+              Téléphone *
+            </label>
+            <input formControlName="telephone" placeholder="Ex: +226 XX XX XX XX"
+                   style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                          border-radius:6px; font-size:14px; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">Email *</label>
+            <input formControlName="email" type="email"
+                   placeholder="contact&#64;entreprise.com"
+                   style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                          border-radius:6px; font-size:14px; box-sizing:border-box;">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+          <div>
+            <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">Pays</label>
+            <input formControlName="pays"
+                   style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                          border-radius:6px; font-size:14px; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">Ville</label>
+            <input formControlName="ville" placeholder="Ex: Ouagadougou"
+                   style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                          border-radius:6px; font-size:14px; box-sizing:border-box;">
+          </div>
+        </div>
+
+        <h3 style="color:#D4830A; border-bottom:2px solid #D4830A;
+                   padding-bottom:8px; margin-bottom:20px;">
+          💡 Votre projet
+        </h3>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div>
+            <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">
+              Type de service *
+            </label>
+            <select formControlName="type_application"
+                    style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                           border-radius:6px; font-size:14px;
+                           box-sizing:border-box; background:white;">
+              <option *ngFor="let t of typeOptions" [value]="t.value">{{ t.label }}</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">Budget</label>
+            <select formControlName="budget"
+                    style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                           border-radius:6px; font-size:14px;
+                           box-sizing:border-box; background:white;">
+              <option *ngFor="let b of budgetOptions" [value]="b.value">{{ b.label }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">
+            Délai souhaité
+          </label>
+          <input formControlName="delai_souhaite"
+                 placeholder="Ex: Dans 2 mois, Urgent, Pas pressé..."
+                 style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">
+            Description de votre projet * (min. 20 caractères)
+          </label>
+          <textarea formControlName="description" rows="4"
+                    placeholder="Décrivez votre activité et ce dont vous avez besoin..."
+                    style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                           border-radius:6px; font-size:14px;
+                           box-sizing:border-box; resize:vertical;"></textarea>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:4px;">
+            Fonctionnalités ou détails supplémentaires
+          </label>
+          <textarea formControlName="fonctionnalites" rows="3"
+                    placeholder="Ex: couleurs souhaitées, fonctionnalités spécifiques..."
+                    style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                           border-radius:6px; font-size:14px;
+                           box-sizing:border-box; resize:vertical;"></textarea>
+        </div>
+
+        <button type="submit"
+                [disabled]="demandeForm.invalid || isLoading"
+                [style.opacity]="demandeForm.invalid || isLoading ? '0.6' : '1'"
+                style="width:100%; padding:16px; background:#D4830A; color:white;
+                       border:none; border-radius:8px; font-size:16px;
+                       font-weight:bold; cursor:pointer;">
+          {{ isLoading ? '⏳ Envoi en cours...' : '🚀 Envoyer ma demande' }}
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="background:#1A1A2E; padding:60px 40px 40px 40px;">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:40px; margin-bottom:40px;">
+
+        <div>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+            <img src="assets/logo-esve.jpg" alt="ESVE"
+                 style="width:40px; height:40px; border-radius:6px;
+                        object-fit:contain; background:white; padding:2px;">
+            <span style="color:#D4830A; font-size:20px; font-weight:900;">ESVE Digital</span>
+          </div>
+          <p style="color:rgba(255,255,255,0.5); font-size:14px; line-height:1.7; margin:0 0 16px 0;">
+            Agence digitale burkinabè spécialisée dans le développement
+            d'applications web, mobiles, sites web et design graphique.
+          </p>
+          <p style="color:rgba(255,255,255,0.4); font-size:13px; margin:0;">
+            📞 (+226) 05 56 25 92<br>
+            ✉ direction&#64;svequipement.com
+          </p>
+        </div>
+
+        <div>
+          <h4 style="color:white; margin:0 0 16px 0; font-size:15px;">Nos services</h4>
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li style="margin-bottom:8px;">
+              <a (click)="scrollTo('services')"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none;
+                        font-size:14px; cursor:pointer;">💻 Applications Web</a>
+            </li>
+            <li style="margin-bottom:8px;">
+              <a (click)="scrollTo('services')"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none;
+                        font-size:14px; cursor:pointer;">📱 Applications Mobiles</a>
+            </li>
+            <li style="margin-bottom:8px;">
+              <a (click)="scrollTo('services')"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none;
+                        font-size:14px; cursor:pointer;">🌐 Sites Web Pro</a>
+            </li>
+            <li style="margin-bottom:8px;">
+              <a (click)="scrollTo('services')"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none;
+                        font-size:14px; cursor:pointer;">🎨 Affiches & Design</a>
+            </li>
+            <li style="margin-bottom:8px;">
+              <a (click)="scrollTo('services')"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none;
+                        font-size:14px; cursor:pointer;">✏️ Logo & Identité</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="color:white; margin:0 0 16px 0; font-size:15px;">ESVE Equipement</h4>
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li style="margin-bottom:8px;">
+              <a href="https://moumouniabdoulwahidsoulama-png.github.io/ESVE-Site-Web/"
+                 target="_blank"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px;">
+                🔧 OAS/TDR
+              </a>
+            </li>
+            <li style="margin-bottom:8px;">
+              <a href="https://moumouniabdoulwahidsoulama-png.github.io/ESVE-Site-Web/pieces.html"
+                 target="_blank"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px;">
+                ⚙️ Pièces mécaniques
+              </a>
+            </li>
+            <li style="margin-bottom:8px;">
+              <a href="https://moumouniabdoulwahidsoulama-png.github.io/ESVE-Site-Web/location.html"
+                 target="_blank"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px;">
+                🚜 Location d'équipements
+              </a>
+            </li>
+            <li style="margin-bottom:8px;">
+              <a href="https://moumouniabdoulwahidsoulama-png.github.io/ESVE-Site-Web/contact.html"
+                 target="_blank"
+                 style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px;">
+                📞 Contact
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:24px;
+                  display:flex; justify-content:space-between; align-items:center;
+                  flex-wrap:wrap; gap:16px;">
+        <p style="color:rgba(255,255,255,0.3); font-size:12px; margin:0;">
+          © 2026 ESVE Digital Solutions — Tous droits réservés
+        </p>
+        <p style="color:rgba(255,255,255,0.3); font-size:12px; margin:0;">
+          Secteur 42, Wayalghin, Ouagadougou, Burkina Faso
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODALE INSCRIPTION -->
+  <div *ngIf="showInscription"
+       style="position:fixed; top:0; left:0; width:100%; height:100%;
+              background:rgba(0,0,0,0.6); z-index:1000;
+              display:flex; align-items:center; justify-content:center;">
+
+    <div style="background:white; border-radius:16px; padding:40px;
+                width:100%; max-width:480px; position:relative;
+                max-height:90vh; overflow-y:auto;">
+
+      <button (click)="showInscription = false"
+              style="position:absolute; top:16px; right:16px; background:none;
+                     border:none; font-size:24px; cursor:pointer; color:#757575;">
+        ✕
+      </button>
+
+      <h2 style="color:#1A1A2E; margin:0 0 8px 0; font-size:24px;">
+        Créer mon compte
+      </h2>
+      <p style="color:#757575; margin:0 0 24px 0; font-size:14px;">
+        Accédez à vos factures et documents en ligne
+      </p>
+
+      <div *ngIf="inscriptionSuccess"
+           style="background:#E8F5E9; border:1px solid #2E7D32;
+                  border-radius:8px; padding:20px; text-align:center;">
+        <p style="font-size:32px; margin:0 0 8px 0;">🎉</p>
+        <p style="color:#2E7D32; font-weight:bold; margin:0 0 4px 0;">
+          Compte créé avec succès !
+        </p>
+        <p style="color:#555; font-size:13px; margin:0 0 16px 0;">
+          Vous pouvez maintenant vous connecter
+        </p>
+        <a routerLink="/login" (click)="showInscription = false"
+           style="background:#2E7D32; color:white; padding:10px 24px;
+                  border-radius:6px; text-decoration:none; font-size:14px;">
+          Se connecter
+        </a>
+      </div>
+
+      <div *ngIf="inscriptionError"
+           style="background:#FFEBEE; color:#B71C1C; padding:12px;
+                  border-radius:6px; margin-bottom:16px; font-size:13px;">
+        {{ inscriptionError }}
+      </div>
+
+      <form *ngIf="!inscriptionSuccess"
+            [formGroup]="inscriptionForm" (ngSubmit)="onInscription()">
+
+        <div style="display:grid; grid-template-columns:1fr 1fr;
+                    gap:12px; margin-bottom:12px;">
+          <div>
+            <label style="display:block; font-size:12px; color:#555; margin-bottom:4px;">
+              Prénom *
+            </label>
+            <input formControlName="first_name" placeholder="Jean"
+                   style="width:100%; padding:10px; border:1px solid #E0E0E0;
+                          border-radius:6px; font-size:14px; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; font-size:12px; color:#555; margin-bottom:4px;">Nom</label>
+            <input formControlName="last_name" placeholder="Dupont"
+                   style="width:100%; padding:10px; border:1px solid #E0E0E0;
+                          border-radius:6px; font-size:14px; box-sizing:border-box;">
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label style="display:block; font-size:12px; color:#555; margin-bottom:4px;">
+            Nom d'utilisateur * (sans espaces)
+          </label>
+          <input formControlName="username" placeholder="Ex: jean.dupont"
+                 style="width:100%; padding:10px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label style="display:block; font-size:12px; color:#555; margin-bottom:4px;">
+            Email *
+          </label>
+          <input formControlName="email" type="email"
+                 placeholder="jean&#64;entreprise.com"
+                 style="width:100%; padding:10px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-size:12px; color:#555; margin-bottom:4px;">
+            Mot de passe * (min. 6 caractères)
+          </label>
+          <input formControlName="password" type="password" placeholder="••••••"
+                 style="width:100%; padding:10px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+
+        <button type="submit"
+                [disabled]="inscriptionForm.invalid || inscriptionLoading"
+                [style.opacity]="inscriptionForm.invalid || inscriptionLoading ? '0.6' : '1'"
+                style="width:100%; padding:14px; background:#D4830A; color:white;
+                       border:none; border-radius:8px; font-size:15px;
+                       font-weight:bold; cursor:pointer;">
+          {{ inscriptionLoading ? '⏳ Création...' : '🚀 Créer mon compte' }}
+        </button>
+
+        <p style="text-align:center; margin:16px 0 0 0; font-size:13px; color:#757575;">
+          Déjà un compte ?
+          <a routerLink="/login" (click)="showInscription = false"
+             style="color:#D4830A; text-decoration:none; font-weight:bold;">
+            Se connecter
+          </a>
+        </p>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- LIEN SITE ESVE EQUIPEMENT -->
+<div style="margin-top:40px; background:linear-gradient(135deg, #1A1A2E, #2D2D4E);
+            border-radius:16px; padding:32px; text-align:center;
+            border:2px solid rgba(212,131,10,0.4);">
+
+  <div style="display:flex; align-items:center; justify-content:center;
+              gap:12px; margin-bottom:16px;">
+    <img src="assets/logo-esve.jpg" alt="ESVE"
+         style="width:50px; height:50px; border-radius:8px;
+                object-fit:contain; background:white; padding:2px;">
+    <div style="text-align:left;">
+      <p style="color:#D4830A; font-size:18px; font-weight:900;
+                margin:0; letter-spacing:1px;">ESVE Equipement</p>
+      <p style="color:rgba(255,255,255,0.5); font-size:12px; margin:0;">
+        Mines • Carrières • BTP • Burkina Faso
+      </p>
+    </div>
+  </div>
+
+  <p style="color:white; font-size:18px; font-weight:bold; margin:0 0 8px 0;">
+    ⛏️ Notre cœur de métier : les Mines et le BTP
+  </p>
+
+  <p style="color:rgba(255,255,255,0.7); font-size:15px; margin:0 0 20px 0;
+            line-height:1.7; max-width:500px; margin-left:auto; margin-right:auto;">
+    Avant d'être une agence digitale, ESVE est avant tout un partenaire technique
+    de référence pour les entreprises minières et BTP au Burkina Faso.
+    Pièces mécaniques, outils d'attaque au sol, location d'engins —
+    découvrez notre expertise terrain.
+  </p>
+
+  <div style="display:flex; flex-wrap:wrap; gap:12px;
+              justify-content:center; margin-bottom:20px;">
+    <span style="background:rgba(212,131,10,0.2); color:#D4830A;
+                 padding:6px 14px; border-radius:20px; font-size:13px;">
+      ⚙️ Pièces mécaniques
+    </span>
+    <span style="background:rgba(212,131,10,0.2); color:#D4830A;
+                 padding:6px 14px; border-radius:20px; font-size:13px;">
+      🔧 Outils OAS/TDR
+    </span>
+    <span style="background:rgba(212,131,10,0.2); color:#D4830A;
+                 padding:6px 14px; border-radius:20px; font-size:13px;">
+      🚜 Location d'engins
+    </span>
+    <span style="background:rgba(212,131,10,0.2); color:#D4830A;
+                 padding:6px 14px; border-radius:20px; font-size:13px;">
+      🏗️ BTP & Construction
+    </span>
+    <span style="background:rgba(212,131,10,0.2); color:#D4830A;
+                 padding:6px 14px; border-radius:20px; font-size:13px;">
+      🪨 Mines & Carrières
+    </span>
+  </div>
+
+  <a href="https://moumouniabdoulwahidsoulama-png.github.io/ESVE-Site-Web/"
+     target="_blank"
+     style="display:inline-flex; align-items:center; gap:10px;
+            background:#D4830A; color:white; padding:14px 32px;
+            border-radius:8px; text-decoration:none; font-size:15px;
+            font-weight:bold; box-shadow:0 4px 20px rgba(212,131,10,0.4);">
+    🌍 Visiter le site ESVE Equipement
+    <span style="font-size:18px;">→</span>
+  </a>
+
+  <p style="color:rgba(255,255,255,0.3); font-size:12px; margin:16px 0 0 0;">
+    Plus de 10 partenaires internationaux • Présent au Burkina Faso depuis 2025
+  </p>
+
+</div>
+</div>

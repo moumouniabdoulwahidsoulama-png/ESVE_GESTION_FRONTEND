@@ -1,0 +1,230 @@
+<div style="padding:24px;">
+
+  <!-- HEADER -->
+  <div style="display:flex; justify-content:space-between;
+              align-items:center; margin-bottom:24px;">
+    <div>
+      <h1 style="margin:0; color:#1A1A2E;">👥 Gestion des Utilisateurs</h1>
+      <p style="color:#757575; margin:4px 0 0 0; font-size:14px;">
+        Créer et gérer les comptes Admin, Employés et Clients
+      </p>
+    </div>
+    <button (click)="showForm = !showForm"
+            style="background:#D4830A; color:white; border:none;
+                   padding:12px 24px; border-radius:8px; cursor:pointer;
+                   font-size:14px; font-weight:bold;">
+      {{ showForm ? '✕ Annuler' : '+ Nouveau compte' }}
+    </button>
+  </div>
+
+  <!-- SUCCÈS -->
+  <div *ngIf="successMessage"
+       style="background:#E8F5E9; border:1px solid #2E7D32; border-radius:8px;
+              padding:16px; margin-bottom:16px; color:#2E7D32; font-weight:bold;">
+    {{ successMessage }}
+  </div>
+
+  <!-- ERREUR -->
+  <div *ngIf="errorMessage"
+       style="background:#FFEBEE; border:1px solid #B71C1C; border-radius:8px;
+              padding:16px; margin-bottom:16px; color:#B71C1C;">
+    {{ errorMessage }}
+  </div>
+
+  <!-- FORMULAIRE CRÉATION -->
+  <div *ngIf="showForm"
+       style="background:white; border-radius:12px; padding:32px;
+              box-shadow:0 4px 20px rgba(0,0,0,0.08); margin-bottom:24px;
+              border-top:4px solid #D4830A;">
+
+    <h2 style="color:#1A1A2E; margin:0 0 24px 0; font-size:20px;">
+      Créer un nouveau compte
+    </h2>
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+      <!-- Choix du rôle -->
+      <h3 style="color:#D4830A; font-size:14px; margin:0 0 12px 0;
+                 text-transform:uppercase; letter-spacing:1px;">
+        Rôle *
+      </h3>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr);
+                  gap:12px; margin-bottom:24px;">
+        <div *ngFor="let r of roleOptions"
+             (click)="userForm.get('role')?.setValue(r.value)"
+             [style.border]="userForm.get('role')?.value === r.value
+                              ? '2px solid #D4830A' : '2px solid #E0E0E0'"
+             [style.background]="userForm.get('role')?.value === r.value
+                                  ? '#FFF3E0' : 'white'"
+             style="padding:16px; border-radius:8px; cursor:pointer;
+                    text-align:center; transition:all 0.2s;">
+          <p style="font-size:24px; margin:0 0 4px 0;">
+            {{ r.value === 'ADMIN' ? '👑' : r.value === 'EMPLOYE' ? '👨‍💼' : '👤' }}
+          </p>
+          <p style="font-weight:bold; margin:0 0 4px 0; font-size:14px; color:#1A1A2E;">
+            {{ r.value }}
+          </p>
+          <p style="font-size:12px; color:#757575; margin:0;">{{ r.desc }}</p>
+        </div>
+      </div>
+
+      <!-- Infos personnelles -->
+      <div style="display:grid; grid-template-columns:1fr 1fr;
+                  gap:16px; margin-bottom:16px;">
+        <div>
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:6px;">
+            Prénom *
+          </label>
+          <input formControlName="first_name" placeholder="Jean"
+                 style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:6px;">Nom</label>
+          <input formControlName="last_name" placeholder="Dupont"
+                 style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr;
+                  gap:16px; margin-bottom:16px;">
+        <div>
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:6px;">
+            Nom d'utilisateur * (pour la connexion)
+          </label>
+          <input formControlName="username" placeholder="jean.dupont"
+                 style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:6px;">
+            Email *
+          </label>
+          <input formControlName="email" type="email"
+                 placeholder="jean@entreprise.com"
+                 style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr;
+                  gap:16px; margin-bottom:24px;">
+        <div>
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:6px;">
+            Mot de passe * (min. 6 caractères)
+          </label>
+          <input formControlName="password" type="password" placeholder="••••••"
+                 style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; color:#555; margin-bottom:6px;">
+            Téléphone
+          </label>
+          <input formControlName="telephone" placeholder="+226 XX XX XX XX"
+                 style="width:100%; padding:10px 12px; border:1px solid #E0E0E0;
+                        border-radius:6px; font-size:14px; box-sizing:border-box;">
+        </div>
+      </div>
+
+      <!-- Récapitulatif -->
+      <div *ngIf="userForm.valid"
+           style="background:#F5F5F5; border-radius:8px; padding:16px;
+                  margin-bottom:20px; border-left:4px solid #D4830A;">
+        <p style="margin:0; font-size:14px; color:#555;">
+          <strong>Récapitulatif :</strong>
+          {{ userForm.get('first_name')?.value }} {{ userForm.get('last_name')?.value }}
+          — <strong>{{ userForm.get('username')?.value }}</strong>
+          — Rôle : <strong style="color:#D4830A;">{{ userForm.get('role')?.value }}</strong>
+        </p>
+        <p style="margin:8px 0 0 0; font-size:13px; color:#757575;">
+          ⚠️ Communiquez le username et mot de passe à l'utilisateur en privé
+        </p>
+      </div>
+
+      <button type="submit"
+              [disabled]="userForm.invalid || isSubmitting"
+              [style.opacity]="userForm.invalid || isSubmitting ? '0.6' : '1'"
+              style="width:100%; padding:14px; background:#1A1A2E; color:white;
+                     border:none; border-radius:8px; font-size:15px;
+                     font-weight:bold; cursor:pointer;">
+        {{ isSubmitting ? '⏳ Création...' : '✅ Créer le compte' }}
+      </button>
+
+    </form>
+  </div>
+
+  <!-- LISTE DES UTILISATEURS -->
+  <div *ngIf="isLoading" style="text-align:center; padding:40px; color:#D4830A;">
+    Chargement...
+  </div>
+
+  <div *ngIf="!isLoading && utilisateurs.length > 0"
+       style="background:white; border-radius:12px; overflow:hidden;
+              box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:#1A1A2E; color:white;">
+          <th style="padding:14px 16px; text-align:left; font-size:13px;">Utilisateur</th>
+          <th style="padding:14px 16px; text-align:left; font-size:13px;">Email</th>
+          <th style="padding:14px 16px; text-align:left; font-size:13px;">Rôle</th>
+          <th style="padding:14px 16px; text-align:left; font-size:13px;">Username</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of utilisateurs; let i = index"
+            [style.background]="i % 2 === 0 ? 'white' : '#F9F9F9'">
+
+          <td style="padding:12px 16px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="width:36px; height:36px; border-radius:50%;
+                          display:flex; align-items:center; justify-content:center;
+                          color:white; font-weight:bold; font-size:14px;"
+                   [style.background]="getRoleColor(u.profil)">
+                {{ (u.first_name || u.username).charAt(0).toUpperCase() }}
+              </div>
+              <div>
+                <p style="margin:0; font-weight:bold; font-size:14px; color:#1A1A2E;">
+                  {{ u.first_name }} {{ u.last_name }}
+                </p>
+                <p style="margin:0; font-size:12px; color:#757575;">
+                  {{ u.profil?.telephone || 'Pas de téléphone' }}
+                </p>
+              </div>
+            </div>
+          </td>
+
+          <td style="padding:12px 16px; font-size:13px; color:#555;">
+            {{ u.email }}
+          </td>
+
+          <td style="padding:12px 16px;">
+            <span [style.color]="getRoleColor(u.profil)"
+                  [style.background]="getRoleColor(u.profil) + '20'"
+                  style="padding:4px 12px; border-radius:12px;
+                         font-size:12px; font-weight:bold;">
+              {{ getRoleLabel(u.profil) }}
+            </span>
+          </td>
+
+          <td style="padding:12px 16px; font-size:13px;">
+            <code style="background:#F5F5F5; padding:4px 8px;
+                         border-radius:4px; font-size:12px;">
+              {{ u.username }}
+            </code>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && utilisateurs.length === 0"
+       style="text-align:center; padding:60px; background:white;
+              border-radius:12px; color:#999;">
+    <p style="font-size:48px; margin:0;">👥</p>
+    <p style="font-size:18px; margin:8px 0 0 0;">Aucun utilisateur trouvé</p>
+  </div>
+
+</div>

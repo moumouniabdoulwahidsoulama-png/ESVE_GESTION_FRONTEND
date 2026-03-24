@@ -1,0 +1,337 @@
+<div style="padding:24px; background:#F5F5F5; min-height:100vh;">
+
+  <!-- TITRE -->
+<div style="margin-bottom:24px; text-align:center; padding:30px 0;">
+  <h1 style="margin:0; font-size:42px; font-weight:900; letter-spacing:2px;
+             background: linear-gradient(135deg, #D4830A, #1A1A2E, #D4830A);
+             -webkit-background-clip: text;
+             -webkit-text-fill-color: transparent;
+             background-clip: text;">
+    ESVE-GESTION
+  </h1>
+  <p style="color:#D4830A; margin:8px 0 0 0; font-size:16px;
+            letter-spacing:3px; text-transform:uppercase; font-weight:500;">
+    ✦ Ecology Smart Vision Equipement ✦
+  </p>
+  <p style="color:#757575; margin:6px 0 0 0; font-size:13px; font-style:italic;">
+    {{ isClient ? 'Bienvenue sur votre espace client' : 'Tableau de bord — Vue d\'ensemble de votre activité' }}
+  </p>
+</div>
+
+<!-- DASHBOARD CLIENT -->
+<div *ngIf="isClient && !isLoading">
+  <div style="display:grid; grid-template-columns:repeat(2,1fr);
+              gap:24px; max-width:800px; margin:0 auto 40px auto;">
+
+    <div style="background:white; border-radius:12px; padding:32px;
+                box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                border-left:4px solid #D4830A; text-align:center;">
+      <p style="font-size:48px; margin:0 0 8px 0;">🧾</p>
+      <p style="color:#1A1A2E; font-size:18px; font-weight:bold; margin:0 0 8px 0;">
+        Mes Factures
+      </p>
+      <p style="color:#757575; font-size:14px; margin:0 0 16px 0;">
+        Consultez et téléchargez vos factures
+      </p>
+      <a routerLink="/factures"
+         style="background:#D4830A; color:white; padding:10px 24px;
+                border-radius:6px; text-decoration:none; font-size:14px;
+                font-weight:bold;">
+        Voir mes factures
+      </a>
+    </div>
+
+    <div style="background:white; border-radius:12px; padding:32px;
+                box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                border-left:4px solid #1565C0; text-align:center;">
+      <p style="font-size:48px; margin:0 0 8px 0;">📞</p>
+      <p style="color:#1A1A2E; font-size:18px; font-weight:bold; margin:0 0 8px 0;">
+        Nous Contacter
+      </p>
+      <p style="color:#757575; font-size:14px; margin:0 0 16px 0;">
+        (+226) 05 56 25 92
+      </p>
+      <a href="tel:+22605562592"
+         style="background:#1565C0; color:white; padding:10px 24px;
+                border-radius:6px; text-decoration:none; font-size:14px;
+                font-weight:bold;">
+        Appeler ESVE
+      </a>
+    </div>
+
+  </div>
+
+  <div style="background:white; border-radius:12px; padding:24px;
+              box-shadow:0 2px 8px rgba(0,0,0,0.08); max-width:800px;
+              margin:0 auto; text-align:center;">
+    <p style="font-size:32px; margin:0 0 8px 0;">💡</p>
+    <p style="color:#1A1A2E; font-size:18px; font-weight:bold; margin:0 0 8px 0;">
+      Vous voulez une application comme celle-ci ?
+    </p>
+    <p style="color:#757575; font-size:14px; margin:0 0 16px 0;">
+      ESVE développe des applications sur mesure pour votre entreprise
+    </p>
+    <a routerLink="/vitrine"
+       style="background:#D4830A; color:white; padding:12px 28px;
+              border-radius:6px; text-decoration:none; font-size:14px;
+              font-weight:bold;">
+      🚀 Découvrir nos services
+    </a>
+  </div>
+</div>
+
+<!-- DASHBOARD ADMIN/EMPLOYÉ -->
+<div *ngIf="!isClient">
+
+  <!-- CHARGEMENT -->
+  <div *ngIf="isLoading" style="text-align:center; padding:60px;">
+    <p style="color:#D4830A; font-size:18px;">Chargement des données...</p>
+  </div>
+
+  <!-- ERREUR -->
+  <div *ngIf="errorMessage" style="color:red; padding:16px; background:#FFEBEE;
+              border-radius:8px; margin-bottom:16px;">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && stats">
+
+    <!-- KPI CARDS -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr);
+                gap:16px; margin-bottom:24px;">
+
+      <!-- CA Mensuel -->
+      <div style="background:white; border-radius:12px; padding:20px;
+                  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                  border-left:4px solid #D4830A;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <p style="color:#757575; font-size:13px; margin:0 0 8px 0;">CA Ce Mois</p>
+            <p style="color:#D4830A; font-size:22px; font-weight:bold; margin:0;">
+              {{ formatMontant(stats.chiffre_affaires?.ce_mois) }}
+            </p>
+            <p style="color:#757575; font-size:12px; margin:4px 0 0 0;">FCFA</p>
+          </div>
+          <div style="background:#FFF3E0; border-radius:50%; width:48px; height:48px;
+                      display:flex; align-items:center; justify-content:center;
+                      font-size:24px;">💰</div>
+        </div>
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid #F0F0F0;">
+          <p style="color:#757575; font-size:12px; margin:0;">
+            Total annuel : <strong style="color:#1A1A2E;">
+              {{ formatMontant(stats.chiffre_affaires?.cette_annee) }} FCFA
+            </strong>
+          </p>
+        </div>
+      </div>
+
+      <!-- Factures -->
+      <div style="background:white; border-radius:12px; padding:20px;
+                  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                  border-left:4px solid #2E7D32;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <p style="color:#757575; font-size:13px; margin:0 0 8px 0;">Factures</p>
+            <p style="color:#2E7D32; font-size:36px; font-weight:bold; margin:0;">
+              {{ stats.factures?.total || 0 }}
+            </p>
+            <p style="color:#757575; font-size:12px; margin:4px 0 0 0;">
+              Ce mois : {{ stats.factures?.ce_mois || 0 }}
+            </p>
+          </div>
+          <div style="background:#E8F5E9; border-radius:50%; width:48px; height:48px;
+                      display:flex; align-items:center; justify-content:center;
+                      font-size:24px;">🧾</div>
+        </div>
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid #F0F0F0;">
+          <p style="color:#757575; font-size:12px; margin:0;">
+            Proformas en attente : <strong style="color:#E65100;">
+              {{ stats.proformas?.en_attente || 0 }}
+            </strong>
+          </p>
+        </div>
+      </div>
+
+      <!-- Proformas -->
+      <div style="background:white; border-radius:12px; padding:20px;
+                  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                  border-left:4px solid #1565C0;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <p style="color:#757575; font-size:13px; margin:0 0 8px 0;">Proformas</p>
+            <p style="color:#1565C0; font-size:36px; font-weight:bold; margin:0;">
+              {{ stats.proformas?.total || 0 }}
+            </p>
+            <p style="color:#757575; font-size:12px; margin:4px 0 0 0;">
+              Total proformas créées
+            </p>
+          </div>
+          <div style="background:#E3F2FD; border-radius:50%; width:48px; height:48px;
+                      display:flex; align-items:center; justify-content:center;
+                      font-size:24px;">📋</div>
+        </div>
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid #F0F0F0;">
+          <p style="color:#757575; font-size:12px; margin:0;">
+            Validées : <strong style="color:#2E7D32;">
+              {{ (stats.proformas?.total || 0) - (stats.proformas?.en_attente || 0) }}
+            </strong>
+          </p>
+        </div>
+      </div>
+
+      <!-- Clients -->
+      <div style="background:white; border-radius:12px; padding:20px;
+                  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                  border-left:4px solid #6A1B9A;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <p style="color:#757575; font-size:13px; margin:0 0 8px 0;">Clients</p>
+            <p style="color:#6A1B9A; font-size:36px; font-weight:bold; margin:0;">
+              {{ nbClients }}
+            </p>
+            <p style="color:#757575; font-size:12px; margin:4px 0 0 0;">
+              Clients actifs
+            </p>
+          </div>
+          <div style="background:#F3E5F5; border-radius:50%; width:48px; height:48px;
+                      display:flex; align-items:center; justify-content:center;
+                      font-size:24px;">👥</div>
+        </div>
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid #F0F0F0;">
+          <a routerLink="/clients" style="color:#6A1B9A; font-size:12px;
+             text-decoration:none; font-weight:bold;">
+            Voir tous les clients →
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DEUXIÈME LIGNE : Top clients + Statuts + Actions rapides -->
+    <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+
+      <!-- TOP CLIENTS -->
+      <div style="background:white; border-radius:12px; padding:20px;
+                  box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="margin:0 0 16px 0; color:#1A1A2E; font-size:16px;">
+          🏆 Top Clients
+        </h3>
+        <div *ngFor="let client of stats.top_clients; let i = index"
+             style="display:flex; justify-content:space-between; align-items:center;
+                    padding:10px 0; border-bottom:1px solid #F0F0F0;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div [style.background]="i === 0 ? '#D4830A' : i === 1 ? '#C0C0C0' : '#CD7F32'"
+                 style="width:28px; height:28px; border-radius:50%; display:flex;
+                        align-items:center; justify-content:center;
+                        color:white; font-size:12px; font-weight:bold;">
+              {{ i + 1 }}
+            </div>
+            <div>
+              <p style="margin:0; font-weight:bold; font-size:13px; color:#1A1A2E;">
+                {{ client.client__nom_entreprise }}
+              </p>
+              <p style="margin:0; font-size:11px; color:#757575;">
+                {{ client.nb_factures }} facture(s)
+              </p>
+            </div>
+          </div>
+          <strong style="color:#D4830A; font-size:13px;">
+            {{ formatMontant(client.total) }} FCFA
+          </strong>
+        </div>
+        <div *ngIf="!stats.top_clients || stats.top_clients.length === 0"
+             style="text-align:center; padding:20px; color:#999;">
+          Aucune donnée disponible
+        </div>
+      </div>
+
+      <!-- STATUTS FACTURES -->
+      <div style="background:white; border-radius:12px; padding:20px;
+                  box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="margin:0 0 16px 0; color:#1A1A2E; font-size:16px;">
+          📊 Statuts Factures
+        </h3>
+        <div *ngFor="let s of stats.par_statut"
+             style="display:flex; justify-content:space-between; align-items:center;
+                    padding:8px 0; border-bottom:1px solid #F0F0F0;">
+          <span [style.background]="s.statut === 'PAYE' ? '#E8F5E9' :
+                                     s.statut === 'ENVOYE' ? '#E3F2FD' :
+                                     s.statut === 'ANNULE' ? '#FFEBEE' : '#FFF3E0'"
+                [style.color]="s.statut === 'PAYE' ? '#2E7D32' :
+                                s.statut === 'ENVOYE' ? '#1565C0' :
+                                s.statut === 'ANNULE' ? '#B71C1C' : '#E65100'"
+                style="padding:4px 10px; border-radius:12px; font-size:12px;
+                       font-weight:bold;">
+            {{ s.statut }}
+          </span>
+          <strong style="font-size:18px; color:#1A1A2E;">{{ s.count }}</strong>
+        </div>
+        <div *ngIf="!stats.par_statut || stats.par_statut.length === 0"
+             style="text-align:center; padding:20px; color:#999;">
+          Aucune facture
+        </div>
+      </div>
+
+      <!-- ACTIONS RAPIDES -->
+      <div style="background:white; border-radius:12px; padding:20px;
+                  box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="margin:0 0 16px 0; color:#1A1A2E; font-size:16px;">
+          ⚡ Actions Rapides
+        </h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a routerLink="/clients/new"
+             style="display:flex; align-items:center; gap:10px; padding:12px;
+                    background:#F3E5F5; border-radius:8px; text-decoration:none;
+                    color:#6A1B9A; font-weight:bold; font-size:13px;">
+            👥 Nouveau client
+          </a>
+          <a routerLink="/factures/new"
+             style="display:flex; align-items:center; gap:10px; padding:12px;
+                    background:#FFF3E0; border-radius:8px; text-decoration:none;
+                    color:#E65100; font-weight:bold; font-size:13px;">
+            🧾 Nouvelle facture
+          </a>
+          <a routerLink="/bons-commande/new"
+             style="display:flex; align-items:center; gap:10px; padding:12px;
+                    background:#E8F5E9; border-radius:8px; text-decoration:none;
+                    color:#2E7D32; font-weight:bold; font-size:13px;">
+            📦 Nouveau bon
+          </a>
+          <a routerLink="/factures"
+             style="display:flex; align-items:center; gap:10px; padding:12px;
+                    background:#E3F2FD; border-radius:8px; text-decoration:none;
+                    color:#1565C0; font-weight:bold; font-size:13px;">
+            📋 Voir factures
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ÉVOLUTION MENSUELLE -->
+    <div style="background:white; border-radius:12px; padding:20px;
+                box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+      <h3 style="margin:0 0 16px 0; color:#1A1A2E; font-size:16px;">
+        📈 Évolution du CA — 6 derniers mois
+      </h3>
+      <div style="display:flex; align-items:flex-end; gap:12px; height:120px;">
+        <div *ngFor="let mois of stats.evolution_mensuelle"
+             style="flex:1; display:flex; flex-direction:column;
+                    align-items:center; justify-content:flex-end; height:100%;">
+          <p style="margin:0 0 4px 0; font-size:10px; color:#D4830A; font-weight:bold;
+                    text-align:center;">
+            {{ mois.montant > 0 ? formatMontant(mois.montant) : '' }}
+          </p>
+          <div [style.height.%]="mois.montant > 0 ? 80 : 5"
+               [style.background]="mois.montant > 0 ? '#D4830A' : '#E0E0E0'"
+               style="width:100%; border-radius:4px 4px 0 0; transition:height 0.3s;">
+          </div>
+          <p style="margin:6px 0 0 0; font-size:10px; color:#757575; text-align:center;">
+            {{ mois.mois }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

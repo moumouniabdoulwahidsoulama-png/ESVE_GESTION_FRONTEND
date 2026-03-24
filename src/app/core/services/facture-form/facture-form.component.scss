@@ -1,0 +1,91 @@
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+
+  mat-form-field {
+    flex: 1 1 200px;
+  }
+}
+
+.lignes-section {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 4px;
+
+  h2 {
+    margin-top: 0;
+    color: #555;
+    font-size: 1.3rem;
+  }
+}
+
+.ligne-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  .description {
+    flex: 3 1 300px;
+  }
+  .ref {
+    flex: 2 1 200px;
+  }
+  .pu, .qte {
+    flex: 1 1 100px;
+  }
+  .ligne-total {
+    min-width: 100px;
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+.totaux-card {
+  margin: 2rem 0;
+  background-color: #e3f2fd;
+
+  .total-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 1.1rem;
+
+    &.grand-total {
+      font-weight: bold;
+      font-size: 1.3rem;
+      border-top: 2px solid #ccc;
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+    }
+    &.grand-total-ttc {
+      font-weight: bold;
+      font-size: 1.3rem;
+      color: #2e7d32;
+      border-top: 2px dashed #2e7d32;
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}

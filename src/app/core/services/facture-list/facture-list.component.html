@@ -1,0 +1,5 @@
+<!-- Dans la définition des colonnes, remplacer -->
+<ng-container matColumnDef="total_ttc">
+  <th mat-header-cell *matHeaderCellDef> Total TTC </th>
+  <td mat-cell *matCellDef="let f"> {{f.total_ttc | number:'1.0-0'}} FCFA </td>
+</ng-container>

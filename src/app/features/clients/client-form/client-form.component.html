@@ -1,0 +1,68 @@
+<div class="container">
+  <h1>{{ isEditMode ? 'Modifier' : 'Nouveau' }} client</h1>
+
+  <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom entreprise</mat-label>
+        <input matInput formControlName="nom_entreprise">
+        <mat-error *ngIf="clientForm.get('nom_entreprise')?.invalid">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nom contact</mat-label>
+        <input matInput formControlName="contact_nom">
+        <mat-error *ngIf="clientForm.get('contact_nom')?.invalid">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="telephone">
+        <mat-error *ngIf="clientForm.get('telephone')?.invalid">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email">
+        <mat-error *ngIf="clientForm.get('email')?.invalid">Email valide requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Adresse</mat-label>
+        <input matInput formControlName="adresse">
+        <mat-error *ngIf="clientForm.get('adresse')?.invalid">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>RCCM</mat-label>
+        <input matInput formControlName="rccm">
+        <mat-error *ngIf="clientForm.get('rccm')?.invalid">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>IFU</mat-label>
+        <input matInput formControlName="ifu">
+        <mat-error *ngIf="clientForm.get('ifu')?.invalid">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Régime d'imposition</mat-label>
+        <input matInput formControlName="regime_imposition">
+        <mat-error *ngIf="clientForm.get('regime_imposition')?.invalid">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Division fiscale</mat-label>
+        <input matInput formControlName="division_fiscale">
+        <mat-error *ngIf="clientForm.get('division_fiscale')?.invalid">Requis</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="clientForm.invalid">
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </button>
+      <button mat-button type="button" routerLink="/clients">Annuler</button>
+    </div>
+  </form>
+</div>

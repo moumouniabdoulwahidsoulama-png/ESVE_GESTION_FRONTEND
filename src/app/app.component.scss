@@ -1,0 +1,10 @@
+.active-link {
+  background: rgba(212, 131, 10, 0.2) !important;
+  color: #D4830A !important;
+  border-right: 3px solid #D4830A;
+}
+
+a:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: white !important;
+}

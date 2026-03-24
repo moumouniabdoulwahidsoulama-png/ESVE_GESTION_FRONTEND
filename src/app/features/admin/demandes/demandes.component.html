@@ -1,0 +1,240 @@
+<div style="padding:24px;">
+
+  <!-- HEADER -->
+  <div style="display:flex; justify-content:space-between;
+              align-items:center; margin-bottom:24px;">
+    <div>
+      <h1 style="margin:0; color:#1A1A2E;">📋 Demandes d'Applications</h1>
+      <p style="color:#757575; margin:4px 0 0 0; font-size:14px;">
+        Clients potentiels ayant soumis une demande via la page vitrine
+      </p>
+    </div>
+    <button (click)="loadDemandes()"
+            style="background:#D4830A; color:white; border:none;
+                   padding:10px 20px; border-radius:6px; cursor:pointer;
+                   font-size:14px; font-weight:bold;">
+      🔄 Actualiser
+    </button>
+  </div>
+
+  <!-- STATS -->
+<div style="display:grid; grid-template-columns:repeat(6,1fr);
+            gap:12px; margin-bottom:24px;">
+  <div *ngFor="let s of statutOptions"
+       style="background:white; border-radius:8px; padding:12px;
+              text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <p style="font-size:22px; font-weight:900; margin:0;"
+       [style.color]="s.color">
+      {{ countByStatut(s.value) }}
+    </p>
+    <p style="font-size:11px; color:#757575; margin:4px 0 0 0;">
+      {{ s.label }}
+    </p>
+  </div>
+</div>
+
+  <!-- CHARGEMENT -->
+  <div *ngIf="isLoading" style="text-align:center; padding:40px; color:#D4830A;">
+    Chargement des demandes...
+  </div>
+
+  <!-- ERREUR -->
+  <div *ngIf="errorMessage"
+       style="color:red; padding:16px; background:#FFEBEE; border-radius:8px;">
+    {{ errorMessage }}
+  </div>
+
+  <!-- TABLEAU -->
+  <div *ngIf="!isLoading && !errorMessage">
+
+    <div *ngIf="demandes.length === 0"
+         style="text-align:center; padding:60px; color:#999; background:white;
+                border-radius:12px;">
+      <p style="font-size:48px; margin:0;">📭</p>
+      <p style="font-size:18px; margin:8px 0 0 0;">Aucune demande pour le moment</p>
+      <p style="font-size:14px; color:#BDBDBD; margin:4px 0 0 0;">
+        Les demandes apparaîtront ici quand des clients rempliront le formulaire
+      </p>
+    </div>
+
+    <div *ngIf="demandes.length > 0" style="background:white; border-radius:12px;
+                overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr style="background:#1A1A2E; color:white;">
+            <th style="padding:14px 16px; text-align:left; font-size:13px;">Date</th>
+            <th style="padding:14px 16px; text-align:left; font-size:13px;">Entreprise</th>
+            <th style="padding:14px 16px; text-align:left; font-size:13px;">Contact</th>
+            <th style="padding:14px 16px; text-align:left; font-size:13px;">Type</th>
+            <th style="padding:14px 16px; text-align:left; font-size:13px;">Budget</th>
+            <th style="padding:14px 16px; text-align:left; font-size:13px;">Statut</th>
+            <th style="padding:14px 16px; text-align:left; font-size:13px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of demandes; let i = index"
+              [style.background]="i % 2 === 0 ? 'white' : '#F9F9F9'">
+
+            <td style="padding:12px 16px; font-size:13px; color:#555;">
+              {{ d.date_demande | date:'dd/MM/yyyy' }}
+            </td>
+
+            <td style="padding:12px 16px;">
+              <p style="margin:0; font-weight:bold; font-size:14px; color:#1A1A2E;">
+                {{ d.nom_entreprise }}
+              </p>
+              <p style="margin:0; font-size:12px; color:#757575;">
+                {{ d.ville }} — {{ d.pays }}
+              </p>
+            </td>
+
+            <td style="padding:12px 16px;">
+              <p style="margin:0; font-size:13px; color:#1A1A2E;">{{ d.nom_contact }}</p>
+              <p style="margin:0; font-size:12px; color:#D4830A;">{{ d.telephone }}</p>
+            </td>
+
+            <td style="padding:12px 16px;">
+              <span style="background:#E3F2FD; color:#1565C0; padding:4px 10px;
+                           border-radius:12px; font-size:12px; font-weight:bold;">
+                {{ getTypeLabel(d.type_application) }}
+              </span>
+            </td>
+
+            <td style="padding:12px 16px; font-size:13px; color:#555;">
+              {{ getBudgetLabel(d.budget) }}
+            </td>
+
+            <td style="padding:12px 16px;">
+              <span [style.color]="getStatutColor(d.statut)"
+                    style="font-size:13px; font-weight:bold;">
+                {{ getStatutLabel(d.statut) }}
+              </span>
+            </td>
+
+            <td style="padding:12px 16px;">
+              <button (click)="voirDetail(d)"
+                      style="background:#D4830A; color:white; border:none;
+                             padding:6px 14px; border-radius:6px;
+                             cursor:pointer; font-size:12px;">
+                👁 Voir
+              </button>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PANNEAU DÉTAIL -->
+  <div *ngIf="showDetail && selectedDemande"
+       style="position:fixed; top:0; right:0; width:480px; height:100vh;
+              background:white; box-shadow:-4px 0 20px rgba(0,0,0,0.15);
+              z-index:1000; overflow-y:auto; padding:24px; box-sizing:border-box;">
+
+    <div style="display:flex; justify-content:space-between;
+                align-items:center; margin-bottom:24px;">
+      <h2 style="margin:0; color:#1A1A2E; font-size:20px;">Détail de la demande</h2>
+      <button (click)="fermerDetail()"
+              style="background:none; border:none; font-size:24px;
+                     cursor:pointer; color:#757575;">✕</button>
+    </div>
+
+    <!-- Infos entreprise -->
+    <div style="background:#F5F5F5; border-radius:8px; padding:16px; margin-bottom:16px;">
+      <h3 style="color:#D4830A; margin:0 0 12px 0; font-size:15px;">👤 Contact</h3>
+      <p style="margin:4px 0; font-size:14px;">
+        <strong>Entreprise :</strong> {{ selectedDemande.nom_entreprise }}
+      </p>
+      <p style="margin:4px 0; font-size:14px;">
+        <strong>Contact :</strong> {{ selectedDemande.nom_contact }}
+      </p>
+      <p style="margin:4px 0; font-size:14px;">
+        <strong>Téléphone :</strong>
+        <a [href]="'tel:' + selectedDemande.telephone"
+           style="color:#D4830A;">{{ selectedDemande.telephone }}</a>
+      </p>
+      <p style="margin:4px 0; font-size:14px;">
+        <strong>Email :</strong>
+        <a [href]="'mailto:' + selectedDemande.email"
+           style="color:#D4830A;">{{ selectedDemande.email }}</a>
+      </p>
+      <p style="margin:4px 0; font-size:14px;">
+        <strong>Ville :</strong> {{ selectedDemande.ville }} — {{ selectedDemande.pays }}
+      </p>
+    </div>
+
+    <!-- Infos projet -->
+    <div style="background:#F5F5F5; border-radius:8px; padding:16px; margin-bottom:16px;">
+      <h3 style="color:#D4830A; margin:0 0 12px 0; font-size:15px;">💡 Projet</h3>
+      <p style="margin:4px 0; font-size:14px;">
+        <strong>Type :</strong> {{ getTypeLabel(selectedDemande.type_application) }}
+      </p>
+      <p style="margin:4px 0; font-size:14px;">
+        <strong>Budget :</strong> {{ getBudgetLabel(selectedDemande.budget) }}
+      </p>
+      <p style="margin:4px 0; font-size:14px;">
+        <strong>Délai :</strong> {{ selectedDemande.delai_souhaite || 'Non précisé' }}
+      </p>
+      <p style="margin:8px 0 4px 0; font-size:14px;"><strong>Description :</strong></p>
+      <p style="margin:0; font-size:13px; color:#555; line-height:1.6;
+                background:white; padding:8px; border-radius:4px;">
+        {{ selectedDemande.description }}
+      </p>
+      <div *ngIf="selectedDemande.fonctionnalites">
+        <p style="margin:8px 0 4px 0; font-size:14px;"><strong>Fonctionnalités :</strong></p>
+        <p style="margin:0; font-size:13px; color:#555; line-height:1.6;
+                  background:white; padding:8px; border-radius:4px;">
+          {{ selectedDemande.fonctionnalites }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Gestion statut -->
+    <div style="background:#FFF3E0; border-radius:8px; padding:16px; margin-bottom:16px;">
+      <h3 style="color:#D4830A; margin:0 0 12px 0; font-size:15px;">⚙️ Gestion interne</h3>
+
+      <label style="display:block; font-size:13px; color:#555; margin-bottom:6px;">
+        Statut
+      </label>
+      <select [(ngModel)]="selectedDemande.statut"
+              style="width:100%; padding:10px; border:1px solid #E0E0E0;
+                     border-radius:6px; font-size:14px; background:white;
+                     margin-bottom:12px;">
+        <option *ngFor="let s of statutOptions" [value]="s.value">{{ s.label }}</option>
+      </select>
+
+      <label style="display:block; font-size:13px; color:#555; margin-bottom:6px;">
+        Notes internes
+      </label>
+      <textarea [(ngModel)]="selectedDemande.notes_internes" rows="4"
+                placeholder="Notes de suivi, devis, rendez-vous..."
+                style="width:100%; padding:10px; border:1px solid #E0E0E0;
+                       border-radius:6px; font-size:13px;
+                       box-sizing:border-box; resize:vertical;"></textarea>
+    </div>
+
+    <div style="display:flex; gap:12px;">
+      <button (click)="updateStatut()"
+              style="flex:1; padding:12px; background:#D4830A; color:white;
+                     border:none; border-radius:6px; font-size:14px;
+                     font-weight:bold; cursor:pointer;">
+        💾 Sauvegarder
+      </button>
+      <button (click)="fermerDetail()"
+              style="flex:1; padding:12px; background:#F5F5F5; color:#555;
+                     border:none; border-radius:6px; font-size:14px; cursor:pointer;">
+        Annuler
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Overlay -->
+  <div *ngIf="showDetail"
+       (click)="fermerDetail()"
+       style="position:fixed; top:0; left:0; width:100%; height:100%;
+              background:rgba(0,0,0,0.3); z-index:999;">
+  </div>
+
+</div>
