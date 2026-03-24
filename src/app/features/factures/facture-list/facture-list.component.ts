@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
 import { FactureService, Facture } from '../../../core/services/facture.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-facture-list',
@@ -27,10 +28,21 @@ export class FactureListComponent implements OnInit {
   errorMessage         = '';
   displayedColumns     = ['numero', 'client', 'type_doc', 'statut', 'total_net', 'actions'];
 
-  constructor(private factureService: FactureService) {}
+  constructor(
+    private factureService: FactureService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadFactures();
+  }
+
+  isClient(): boolean {
+    return this.authService.isClient();
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
   }
 
   loadFactures(): void {

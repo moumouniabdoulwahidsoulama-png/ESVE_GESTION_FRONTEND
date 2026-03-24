@@ -1,9 +1,14 @@
 <div style="padding: 24px;">
 
   <!-- HEADER -->
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-    <h1 style="margin:0;">Factures & Proformas</h1>
-    <a mat-raised-button color="primary" routerLink="/factures/new"
+  <div style="display:flex; justify-content:space-between;
+              align-items:center; margin-bottom:24px;">
+    <h1 style="margin:0;">
+      {{ isClient() ? 'Mes Factures' : 'Factures & Proformas' }}
+    </h1>
+    <!-- Bouton visible uniquement pour Admin et Employé -->
+    <a *ngIf="!isClient()" mat-raised-button color="primary"
+       routerLink="/factures/new"
        style="background-color:#D4830A; color:white;">
       + Nouvelle facture
     </a>
@@ -22,8 +27,9 @@
   <!-- TABLEAU -->
   <div *ngIf="!isLoading && !errorMessage">
 
-    <div *ngIf="factures.length === 0" style="text-align:center; padding:40px; color:#999;">
-      Aucune facture pour le moment.
+    <div *ngIf="factures.length === 0"
+         style="text-align:center; padding:40px; color:#999;">
+      {{ isClient() ? 'Aucune facture disponible pour le moment.' : 'Aucune facture pour le moment.' }}
     </div>
 
     <mat-table [dataSource]="factures" *ngIf="factures.length > 0">
@@ -36,7 +42,7 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Client -->
+      <!-- Client — caché pour les clients -->
       <ng-container matColumnDef="client">
         <mat-header-cell *matHeaderCellDef> Client </mat-header-cell>
         <mat-cell *matCellDef="let f">
@@ -50,7 +56,8 @@
         <mat-cell *matCellDef="let f">
           <span [style.background]="f.type_doc === 'PROFORMA' ? '#FFF3E0' : '#E8F5E9'"
                 [style.color]="f.type_doc === 'PROFORMA' ? '#E65100' : '#2E7D32'"
-                style="padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">
+                style="padding:4px 10px; border-radius:12px;
+                       font-size:12px; font-weight:bold;">
             {{ f.type_doc }}
           </span>
         </mat-cell>
@@ -80,16 +87,17 @@
         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
         <mat-cell *matCellDef="let f">
 
-          <!-- Valider proforma -->
+          <!-- Valider proforma — Admin/Employé seulement -->
           <button mat-icon-button
-                  *ngIf="f.type_doc === 'PROFORMA' && f.statut !== 'VALIDE' && f.statut !== 'ANNULE'"
+                  *ngIf="!isClient() && f.type_doc === 'PROFORMA'
+                         && f.statut !== 'VALIDE' && f.statut !== 'ANNULE'"
                   (click)="validerProforma(f.id)"
                   title="Valider la proforma"
                   style="color:#2E7D32;">
             <mat-icon>check_circle</mat-icon>
           </button>
 
-          <!-- Télécharger PDF -->
+          <!-- Télécharger PDF — tous les rôles -->
           <button mat-icon-button
                   (click)="telechargerPdf(f.id, f.numero)"
                   title="Télécharger PDF"
@@ -97,16 +105,18 @@
             <mat-icon>picture_as_pdf</mat-icon>
           </button>
 
-          <!-- Modifier -->
+          <!-- Modifier — Admin/Employé seulement -->
           <button mat-icon-button
+                  *ngIf="!isClient()"
                   [routerLink]="['/factures', f.id, 'edit']"
                   title="Modifier"
                   style="color:#D4830A;">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <!-- Supprimer -->
+          <!-- Supprimer — Admin seulement -->
           <button mat-icon-button
+                  *ngIf="isAdmin()"
                   (click)="deleteFacture(f.id)"
                   title="Supprimer"
                   style="color:#B71C1C;">
