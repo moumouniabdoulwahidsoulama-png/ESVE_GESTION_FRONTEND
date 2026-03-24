@@ -51,19 +51,31 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) return;
-    this.isLoading    = true;
-    this.errorMessage = '';
+  if (this.loginForm.invalid) return;
+  this.isLoading    = true;
+  this.errorMessage = '';
 
-    const { email, password } = this.loginForm.value;
-    this.authService.login(email, password).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
-      error: () => {
-        this.errorMessage = 'Identifiants incorrects. Vérifiez votre nom d\'utilisateur et mot de passe.';
-        this.isLoading    = false;
-      }
-    });
-  }
+  const { email, password } = this.loginForm.value;
+  this.authService.login(email, password).subscribe({
+    next: () => {
+      // Charger le profil pour récupérer le rôle
+      this.authService.chargerProfil().subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.router.navigate(['/dashboard']);
+        },
+        error: () => {
+          this.isLoading = false;
+          this.router.navigate(['/dashboard']);
+        }
+      });
+    },
+    error: () => {
+      this.errorMessage = 'Identifiants incorrects. Vérifiez votre nom d\'utilisateur et mot de passe.';
+      this.isLoading    = false;
+    }
+  });
+}
 
   onInscription(): void {
   if (this.inscriptionForm.invalid) return;
@@ -72,17 +84,24 @@ export class LoginComponent {
 
   this.http.post('/api/v1/auth/register/', this.inscriptionForm.value).subscribe({
     next: () => {
-      // Connexion automatique après inscription
       const username = this.inscriptionForm.value.username;
       const password = this.inscriptionForm.value.password;
 
       this.authService.login(username, password).subscribe({
         next: () => {
-          this.inscriptionLoading = false;
-          this.router.navigate(['/dashboard']);
+          // Charger le profil pour récupérer le rôle CLIENT
+          this.authService.chargerProfil().subscribe({
+            next: () => {
+              this.inscriptionLoading = false;
+              this.router.navigate(['/dashboard']);
+            },
+            error: () => {
+              this.inscriptionLoading = false;
+              this.router.navigate(['/dashboard']);
+            }
+          });
         },
         error: () => {
-          // Si login auto échoue, afficher succès et rediriger vers login
           this.inscriptionSuccess = true;
           this.inscriptionLoading = false;
         }
