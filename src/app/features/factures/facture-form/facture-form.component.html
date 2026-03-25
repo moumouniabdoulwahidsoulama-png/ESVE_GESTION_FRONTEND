@@ -49,8 +49,8 @@
             <mat-label>%</mat-label>
             <input matInput type="number" formControlName="remise_pct"
                    min="0" max="100"
-                   (input)="calculerTotaux()"
-                   (change)="calculerTotaux()">
+
+>
           </mat-form-field>
         </div>
 
@@ -80,8 +80,8 @@
             <mat-label>Montant (XOF)</mat-label>
             <input matInput type="number" formControlName="montant_transport"
                    min="0"
-                   (input)="calculerTotaux()"
-                   (change)="calculerTotaux()">
+
+>
           </mat-form-field>
         </div>
 
@@ -115,16 +115,16 @@
           <mat-label>Prix unitaire HT</mat-label>
           <input matInput type="number" min="0"
                  formControlName="prix_unitaire_ht"
-                 (input)="calculerTotaux()"
-                 (change)="calculerTotaux()">
+
+>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="flex:1; min-width:80px;">
           <mat-label>Quantité</mat-label>
           <input matInput type="number" min="1"
                  formControlName="quantite"
-                 (input)="calculerTotaux()"
-                 (change)="calculerTotaux()">
+
+>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="flex:1; min-width:100px;">

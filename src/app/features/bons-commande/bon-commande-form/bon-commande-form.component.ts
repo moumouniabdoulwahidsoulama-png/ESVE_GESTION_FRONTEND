@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -41,11 +41,11 @@ export class BonCommandeFormComponent implements OnInit {
   totalNet  = 0;
 
   constructor(
-    private fb: FormBuilder,
-    private bonCommandeService: BonCommandeService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private zone: NgZone
+    private fb:                  FormBuilder,
+    private bonCommandeService:  BonCommandeService,
+    private route:               ActivatedRoute,
+    private router:              Router,
+    private cdr:                 ChangeDetectorRef
   ) {
     this.bonForm = this.fb.group({
       fournisseur_nom:              ['', Validators.required],
@@ -78,7 +78,6 @@ export class BonCommandeFormComponent implements OnInit {
     return this.bonForm.get('lignes') as FormArray;
   }
 
-  // Calcul du total d'une ligne (utilisé dans le HTML)
   ligneTotal(i: number): number {
     const lg  = this.lignes.at(i) as FormGroup;
     const pu  = Number(lg.get('prix_unitaire_ht')?.value) || 0;
@@ -97,12 +96,10 @@ export class BonCommandeFormComponent implements OnInit {
       }
     });
 
-    // Écouter UNIQUEMENT les checkboxes via valueChanges
-    ['appliquer_tva', 'appliquer_retenue', 'appliquer_bic', 'appliquer_transport'
-    ].forEach(field => {
-      this.bonForm.get(field)?.valueChanges.subscribe(() => {
-        this.zone.run(() => this.calculerTotaux());
-      });
+    // ✅ UNE SEULE subscription sur tout le formulaire — capte TOUS les changements
+    this.bonForm.valueChanges.subscribe(() => {
+      this.calculerTotaux();
+      this.cdr.markForCheck();
     });
   }
 
@@ -126,17 +123,21 @@ export class BonCommandeFormComponent implements OnInit {
           delais_livraison:             bon.delais_livraison,
           objet:                        bon.objet,
           notes:                        bon.notes,
-          appliquer_tva:                bon.appliquer_tva        || false,
-          appliquer_retenue:            bon.appliquer_retenue    || false,
-          appliquer_bic:                bon.appliquer_bic        || false,
-          appliquer_transport:          bon.appliquer_transport  || false,
-          montant_transport:            bon.montant_transport    || 0,
-        });
+          appliquer_tva:                bon.appliquer_tva       || false,
+          appliquer_retenue:            bon.appliquer_retenue   || false,
+          appliquer_bic:                bon.appliquer_bic       || false,
+          appliquer_transport:          bon.appliquer_transport || false,
+          montant_transport:            bon.montant_transport   || 0,
+        }, { emitEvent: false });
+
         while (this.lignes.length) { this.lignes.removeAt(0); }
         if (bon.lignes) {
-          bon.lignes.forEach((l: any) => this.lignes.push(this.creerLigneForm(l)));
+          bon.lignes.forEach((l: any) => {
+            this.lignes.push(this.creerLigneForm(l), { emitEvent: false });
+          });
         }
         this.calculerTotaux();
+        this.cdr.detectChanges();
       },
       error: () => { this.errorMessage = 'Impossible de charger le bon'; }
     });
@@ -157,40 +158,39 @@ export class BonCommandeFormComponent implements OnInit {
 
   ajouterLigne(): void {
     this.lignes.push(this.creerLigneForm());
-    this.calculerTotaux();
   }
 
   supprimerLigne(i: number): void {
     this.lignes.removeAt(i);
     this.calculerTotaux();
+    this.cdr.detectChanges();
   }
 
   calculerTotaux(): void {
+    const fv = this.bonForm.getRawValue();
+
     // ── Lignes ──────────────────────────────────────────
     let total = 0;
-    for (let i = 0; i < this.lignes.length; i++) {
-      const lg  = this.lignes.at(i) as FormGroup;
-      const pu  = Number(lg.get('prix_unitaire_ht')?.value) || 0;
-      const qte = Number(lg.get('quantite')?.value)         || 0;
-      total += pu * qte;
-    }
+    (fv.lignes || []).forEach((l: any) => {
+      total += (Number(l.prix_unitaire_ht) || 0) * (Number(l.quantite) || 0);
+    });
     this.totalHT = total;
 
     // ── TVA 18% ─────────────────────────────────────────
-    this.tva = this.bonForm.get('appliquer_tva')?.value
+    this.tva = fv.appliquer_tva
       ? Math.round(total * 0.18) : 0;
 
     // ── Retenue 5% ──────────────────────────────────────
-    this.retenue = this.bonForm.get('appliquer_retenue')?.value
+    this.retenue = fv.appliquer_retenue
       ? Math.round(total * 0.05) : 0;
 
-    // ── BIC 2% = 2% de (HT + TVA) ───────────────────────
-    this.bic = this.bonForm.get('appliquer_bic')?.value
+    // ── BIC 2% ──────────────────────────────────────────
+    this.bic = fv.appliquer_bic
       ? Math.round((total + this.tva) * 0.02) : 0;
 
-    // ── Transport (montant manuel) ───────────────────────
-    this.transport = this.bonForm.get('appliquer_transport')?.value
-      ? Math.round(Number(this.bonForm.get('montant_transport')?.value) || 0) : 0;
+    // ── Transport ───────────────────────────────────────
+    this.transport = fv.appliquer_transport
+      ? Math.round(Number(fv.montant_transport) || 0) : 0;
 
     // ── Total net ────────────────────────────────────────
     this.totalNet = total + this.tva - this.retenue - this.bic + this.transport;
@@ -200,7 +200,7 @@ export class BonCommandeFormComponent implements OnInit {
     if (this.bonForm.invalid) return;
     this.isLoading    = true;
     this.errorMessage = '';
-    const fv = this.bonForm.value;
+    const fv = this.bonForm.getRawValue();
 
     const formatDate = (date: any): string | null => {
       if (!date) return null;
