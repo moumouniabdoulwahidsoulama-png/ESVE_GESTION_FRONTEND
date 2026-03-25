@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { BonCommandeService, BonCommande } from '../../../core/services/bon-commande.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-bon-commande-list',
@@ -27,10 +28,21 @@ export class BonCommandeListComponent implements OnInit {
   isLoading            = true;
   errorMessage         = '';
 
-  constructor(private bonCommandeService: BonCommandeService) {}
+  constructor(
+    private bonCommandeService: BonCommandeService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadBons();
+  }
+
+  isClient(): boolean {
+    return this.authService.isClient();
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
   }
 
   loadBons(): void {

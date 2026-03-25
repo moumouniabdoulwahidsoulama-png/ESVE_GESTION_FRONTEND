@@ -1,9 +1,13 @@
 <div style="padding: 24px;">
 
   <!-- HEADER -->
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-    <h1 style="margin:0;">Bons de Commande</h1>
-    <a mat-raised-button routerLink="/bons-commande/new"
+  <div style="display:flex; justify-content:space-between;
+              align-items:center; margin-bottom:24px;">
+    <h1 style="margin:0;">
+      {{ isClient() ? 'Mes Bons de Commande' : 'Bons de Commande' }}
+    </h1>
+    <!-- Bouton visible uniquement pour Admin et Employé -->
+    <a *ngIf="!isClient()" mat-raised-button routerLink="/bons-commande/new"
        style="background-color:#D4830A; color:white;">
       + Nouveau bon
     </a>
@@ -24,7 +28,8 @@
 
     <div *ngIf="bons.length === 0"
          style="text-align:center; padding:40px; color:#999;">
-      Aucun bon de commande pour le moment.
+      {{ isClient() ? 'Aucun bon de commande disponible pour le moment.'
+                    : 'Aucun bon de commande pour le moment.' }}
     </div>
 
     <mat-table [dataSource]="bons" *ngIf="bons.length > 0">
@@ -46,7 +51,9 @@
       <!-- Date -->
       <ng-container matColumnDef="date_commande">
         <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
-        <mat-cell *matCellDef="let b">{{ b.date_commande | date:'dd/MM/yyyy' }}</mat-cell>
+        <mat-cell *matCellDef="let b">
+          {{ b.date_commande | date:'dd/MM/yyyy' }}
+        </mat-cell>
       </ng-container>
 
       <!-- Total net -->
@@ -73,7 +80,7 @@
         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
         <mat-cell *matCellDef="let b">
 
-          <!-- Télécharger PDF -->
+          <!-- Télécharger PDF — tous les rôles -->
           <button mat-icon-button
                   (click)="telechargerPdf(b.id, b.numero)"
                   title="Télécharger PDF"
@@ -81,16 +88,18 @@
             <mat-icon>picture_as_pdf</mat-icon>
           </button>
 
-          <!-- Modifier -->
+          <!-- Modifier — Admin/Employé seulement -->
           <button mat-icon-button
+                  *ngIf="!isClient()"
                   [routerLink]="['/bons-commande', b.id, 'edit']"
                   title="Modifier"
                   style="color:#D4830A;">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <!-- Supprimer -->
+          <!-- Supprimer — Admin seulement -->
           <button mat-icon-button
+                  *ngIf="isAdmin()"
                   (click)="supprimerBon(b.id)"
                   title="Supprimer"
                   style="color:#B71C1C;">
