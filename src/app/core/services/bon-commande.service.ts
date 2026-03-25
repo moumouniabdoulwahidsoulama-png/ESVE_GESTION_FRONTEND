@@ -16,34 +16,44 @@ export interface LigneBonCommande {
 }
 
 export interface BonCommande {
-  id?:                          number;
-  numero?:                      string;
-  statut?:                      string;
-  fournisseur_nom:              string;
-  fournisseur_contact?:         string;
-  fournisseur_tel?:             string;
-  fournisseur_email?:           string;
-  fournisseur_adresse?:         string;
-  fournisseur_ifu?:             string;
-  fournisseur_rccm?:            string;
-  fournisseur_division_fiscale?:string;
-  fournisseur_regime?:          string;
-  ref_proforma_fournisseur?:    string;
-  date_proforma_fournisseur?:   string;
-  termes_paiement?:             string;
-  termes_livraison?:            string;
-  delais_livraison?:            string;
-  date_commande?:               string;
-  date_livraison_prev?:         string;
-  objet?:                       string;
-  notes?:                       string;
-  total_ht?:                    number;
-  tva_18pct?:                   number;
-  retenue_5pct?:                number;
-  bic_2pct?:                    number;
-  total_net?:                   number;
-  pdf_file?:                    string;
-  lignes:                       LigneBonCommande[];
+  id?:                           number;
+  numero?:                       string;
+  statut?:                       string;
+  fournisseur_nom:               string;
+  fournisseur_contact?:          string;
+  fournisseur_tel?:              string;
+  fournisseur_email?:            string;
+  fournisseur_adresse?:          string;
+  fournisseur_ifu?:              string;
+  fournisseur_rccm?:             string;
+  fournisseur_division_fiscale?: string;
+  fournisseur_regime?:           string;
+  ref_proforma_fournisseur?:     string;
+  date_proforma_fournisseur?:    string;
+  termes_paiement?:              string;
+  termes_livraison?:             string;
+  delais_livraison?:             string;
+  date_commande?:                string;
+  date_livraison_prev?:          string;
+  objet?:                        string;
+  notes?:                        string;
+
+  // Options de calcul ← AJOUTÉS
+  appliquer_tva?:       boolean;
+  appliquer_retenue?:   boolean;
+  appliquer_bic?:       boolean;
+  appliquer_transport?: boolean;
+
+  // Montants
+  montant_transport?:   number;   // ← AJOUTÉ
+  total_ht?:            number;
+  tva_18pct?:           number;
+  retenue_5pct?:        number;
+  bic_2pct?:            number;
+  total_net?:           number;
+
+  pdf_file?:            string;
+  lignes:               LigneBonCommande[];
 }
 
 @Injectable({ providedIn: 'root' })

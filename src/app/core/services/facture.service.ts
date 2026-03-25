@@ -26,24 +26,26 @@ export interface Facture {
   validite_jours?:    number;
 
   // Options de calcul
-  appliquer_remise?:   boolean;
-  appliquer_tva?:      boolean;
-  appliquer_retenue?:  boolean;
-  appliquer_bic?:      boolean;
+  appliquer_remise?:    boolean;
+  appliquer_tva?:       boolean;
+  appliquer_retenue?:   boolean;
+  appliquer_bic?:       boolean;
+  appliquer_transport?: boolean;   // ← AJOUTÉ
 
   // Montants
-  remise_pct?:        number;
-  total_ht_brut?:     number;
-  montant_remise?:    number;
-  total_ht?:          number;
-  tva_18pct?:         number;
-  retenue_5pct?:      number;
-  bic_2pct?:          number;
-  total_net?:         number;
+  remise_pct?:          number;
+  montant_transport?:   number;    // ← AJOUTÉ
+  total_ht_brut?:       number;
+  montant_remise?:      number;
+  total_ht?:            number;
+  tva_18pct?:           number;
+  retenue_5pct?:        number;
+  bic_2pct?:            number;
+  total_net?:           number;
 
-  pdf_file?:          string;
-  notes?:             string;
-  lignes:             LigneFacture[];
+  pdf_file?:            string;
+  notes?:               string;
+  lignes:               LigneFacture[];
 }
 
 @Injectable({ providedIn: 'root' })

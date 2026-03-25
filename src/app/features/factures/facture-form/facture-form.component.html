@@ -43,8 +43,9 @@
           <mat-checkbox formControlName="appliquer_remise" color="warn">
             Remise
           </mat-checkbox>
-          <mat-form-field appearance="outline" style="width:100px;"
-                          *ngIf="factureForm.get('appliquer_remise')?.value">
+          <mat-form-field appearance="outline"
+                          [style.display]="factureForm.get('appliquer_remise')?.value ? 'block' : 'none'"
+                          style="width:100px;">
             <mat-label>%</mat-label>
             <input matInput type="number" formControlName="remise_pct"
                    min="0" max="100"
@@ -68,13 +69,14 @@
           BIC 2%
         </mat-checkbox>
 
-        <!-- Transport ← NOUVEAU -->
+        <!-- Transport -->
         <div style="display:flex; align-items:center; gap:8px;">
           <mat-checkbox formControlName="appliquer_transport" color="primary">
             Transport
           </mat-checkbox>
-          <mat-form-field appearance="outline" style="width:150px;"
-                          *ngIf="factureForm.get('appliquer_transport')?.value">
+          <mat-form-field appearance="outline"
+                          [style.display]="factureForm.get('appliquer_transport')?.value ? 'block' : 'none'"
+                          style="width:150px;">
             <mat-label>Montant (XOF)</mat-label>
             <input matInput type="number" formControlName="montant_transport"
                    min="0"

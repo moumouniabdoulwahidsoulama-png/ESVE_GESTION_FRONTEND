@@ -124,13 +124,14 @@
           BIC 2%
         </mat-checkbox>
 
-        <!-- Transport ← NOUVEAU -->
+        <!-- Transport -->
         <div style="display:flex; align-items:center; gap:8px;">
           <mat-checkbox formControlName="appliquer_transport" color="primary">
             Transport
           </mat-checkbox>
-          <mat-form-field appearance="outline" style="width:160px;"
-                          *ngIf="bonForm.get('appliquer_transport')?.value">
+          <mat-form-field appearance="outline"
+                          [style.display]="bonForm.get('appliquer_transport')?.value ? 'block' : 'none'"
+                          style="width:160px;">
             <mat-label>Montant transport (XOF)</mat-label>
             <input matInput type="number" formControlName="montant_transport"
                    min="0"
