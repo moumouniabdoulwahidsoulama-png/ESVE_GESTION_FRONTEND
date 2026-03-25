@@ -131,7 +131,7 @@
         </mat-form-field>
 
         <div style="min-width:110px; text-align:right; font-weight:bold; color:#D4830A;">
-          {{ (ligne.get('prix_unitaire_ht')?.value * ligne.get('quantite')?.value) | number:'1.0-0' }} FCFA
+          {{ ligneTotal(i) | number:'1.0-0' }} FCFA
         </div>
 
         <button type="button" mat-icon-button color="warn" (click)="supprimerLigne(i)">

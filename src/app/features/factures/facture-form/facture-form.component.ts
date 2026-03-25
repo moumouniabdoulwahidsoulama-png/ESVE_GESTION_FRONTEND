@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -34,14 +34,14 @@ export class FactureFormComponent implements OnInit {
   isLoading       = false;
   errorMessage    = '';
 
-  // Totaux en temps réel
+  // Totaux affichés en temps réel
   totalHT          = 0;
   montantRemise    = 0;
   totalApresRemise = 0;
   tva              = 0;
   retenue          = 0;
   bic              = 0;
-  transport        = 0;   // ← NOUVEAU
+  transport        = 0;
   totalNet         = 0;
 
   constructor(
@@ -50,25 +50,33 @@ export class FactureFormComponent implements OnInit {
     private clientService: ClientService,
     private route: ActivatedRoute,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private zone: NgZone
   ) {
     this.factureForm = this.fb.group({
-      client:               ['', Validators.required],
-      type_doc:             ['PROFORMA', Validators.required],
-      remise_pct:           [0, [Validators.min(0), Validators.max(100)]],
-      notes:                [''],
-      appliquer_remise:     [false],
-      appliquer_tva:        [false],
-      appliquer_retenue:    [false],
-      appliquer_bic:        [false],
-      appliquer_transport:  [false],          // ← NOUVEAU
-      montant_transport:    [0, Validators.min(0)],  // ← NOUVEAU
-      lignes:               this.fb.array([])
+      client:              ['', Validators.required],
+      type_doc:            ['PROFORMA', Validators.required],
+      remise_pct:          [0, [Validators.min(0), Validators.max(100)]],
+      notes:               [''],
+      appliquer_remise:    [false],
+      appliquer_tva:       [false],
+      appliquer_retenue:   [false],
+      appliquer_bic:       [false],
+      appliquer_transport: [false],
+      montant_transport:   [0, Validators.min(0)],
+      lignes:              this.fb.array([])
     });
   }
 
   get lignes(): FormArray {
     return this.factureForm.get('lignes') as FormArray;
+  }
+
+  // Calcul du total d'une ligne (utilisé dans le HTML)
+  ligneTotal(i: number): number {
+    const lg  = this.lignes.at(i) as FormGroup;
+    const pu  = Number(lg.get('prix_unitaire_ht')?.value) || 0;
+    const qte = Number(lg.get('quantite')?.value)         || 0;
+    return pu * qte;
   }
 
   ngOnInit(): void {
@@ -84,20 +92,21 @@ export class FactureFormComponent implements OnInit {
       }
     });
 
-    // Écouter les cases à cocher et champs de calcul
+    // Écouter UNIQUEMENT les checkboxes via valueChanges
+    // Les inputs numériques utilisent (input)/(change) dans le HTML
     ['appliquer_remise', 'appliquer_tva', 'appliquer_retenue',
-     'appliquer_bic', 'appliquer_transport', 'remise_pct', 'montant_transport'
+     'appliquer_bic', 'appliquer_transport'
     ].forEach(field => {
-      this.factureForm.get(field)?.valueChanges.subscribe(() => this.calculerTotaux());
+      this.factureForm.get(field)?.valueChanges.subscribe(() => {
+        this.zone.run(() => this.calculerTotaux());
+      });
     });
   }
 
   loadClients(): void {
     this.clientService.getAll().subscribe({
-      next: (data: any) => {
-        this.clients = data.results ? data.results : data;
-      },
-      error: (error) => console.error('Erreur clients:', error)
+      next: (data: any) => { this.clients = data.results ? data.results : data; },
+      error: (err) => console.error('Erreur clients:', err)
     });
   }
 
@@ -107,8 +116,8 @@ export class FactureFormComponent implements OnInit {
         this.factureForm.patchValue({
           client:              facture.client,
           type_doc:            facture.type_doc,
-          remise_pct:          facture.remise_pct || 0,
-          notes:               facture.notes || '',
+          remise_pct:          facture.remise_pct          || 0,
+          notes:               facture.notes               || '',
           appliquer_remise:    facture.appliquer_remise    || false,
           appliquer_tva:       facture.appliquer_tva       || false,
           appliquer_retenue:   facture.appliquer_retenue   || false,
@@ -121,7 +130,7 @@ export class FactureFormComponent implements OnInit {
 
         if (facture.lignes) {
           facture.lignes.forEach((l: any) => {
-            this.lignes.push(this.creerLigneFormAvecEcoute(l));
+            this.lignes.push(this.creerLigneForm(l));
           });
         }
         this.calculerTotaux();
@@ -132,26 +141,18 @@ export class FactureFormComponent implements OnInit {
 
   creerLigneForm(ligne?: any): FormGroup {
     return this.fb.group({
-      description:           [ligne?.description || '',         Validators.required],
-      reference_client:      [ligne?.reference_client || ''],
+      description:           [ligne?.description           || '', Validators.required],
+      reference_client:      [ligne?.reference_client      || ''],
       reference_fournisseur: [ligne?.reference_fournisseur || ''],
-      prix_unitaire_ht:      [ligne?.prix_unitaire_ht || 0,     [Validators.required, Validators.min(0)]],
-      quantite:              [ligne?.quantite || 1,             [Validators.required, Validators.min(1)]],
-      delais:                [ligne?.delais || ''],
-      ordre:                 [ligne?.ordre || 0]
+      prix_unitaire_ht:      [Number(ligne?.prix_unitaire_ht) || 0, [Validators.required, Validators.min(0)]],
+      quantite:              [Number(ligne?.quantite)       || 1,   [Validators.required, Validators.min(1)]],
+      delais:                [ligne?.delais                || ''],
+      ordre:                 [ligne?.ordre                 || 0]
     });
   }
 
-  creerLigneFormAvecEcoute(ligne?: any): FormGroup {
-    const ligneForm = this.creerLigneForm(ligne);
-    ligneForm.get('prix_unitaire_ht')?.valueChanges.subscribe(() => this.calculerTotaux());
-    ligneForm.get('quantite')?.valueChanges.subscribe(() => this.calculerTotaux());
-    return ligneForm;
-  }
-
   ajouterLigne(): void {
-    const ligneForm = this.creerLigneFormAvecEcoute();
-    this.lignes.push(ligneForm);
+    this.lignes.push(this.creerLigneForm());
     this.calculerTotaux();
   }
 
@@ -161,43 +162,40 @@ export class FactureFormComponent implements OnInit {
   }
 
   calculerTotaux(): void {
+    // ── Lignes ──────────────────────────────────────────
     let total = 0;
-
     for (let i = 0; i < this.lignes.length; i++) {
-      const ligneCtrl = this.lignes.at(i);
-      const pu  = parseFloat(ligneCtrl.get('prix_unitaire_ht')?.value) || 0;
-      const qte = parseFloat(ligneCtrl.get('quantite')?.value)         || 0;
+      const lg  = this.lignes.at(i) as FormGroup;
+      const pu  = Number(lg.get('prix_unitaire_ht')?.value) || 0;
+      const qte = Number(lg.get('quantite')?.value)         || 0;
       total += pu * qte;
     }
-
     this.totalHT = total;
 
-    // Remise
-    const appliquerRemise = this.factureForm.get('appliquer_remise')?.value;
-    const remisePct       = parseFloat(this.factureForm.get('remise_pct')?.value) || 0;
-    this.montantRemise    = (appliquerRemise && remisePct > 0) ? total * (remisePct / 100) : 0;
+    // ── Remise ──────────────────────────────────────────
+    const avecRemise = !!this.factureForm.get('appliquer_remise')?.value;
+    const remisePct  = Number(this.factureForm.get('remise_pct')?.value) || 0;
+    this.montantRemise    = (avecRemise && remisePct > 0) ? Math.round(total * remisePct / 100) : 0;
     this.totalApresRemise = total - this.montantRemise;
 
-    // TVA 18%
+    // ── TVA 18% ─────────────────────────────────────────
     this.tva = this.factureForm.get('appliquer_tva')?.value
-      ? this.totalApresRemise * 0.18 : 0;
+      ? Math.round(this.totalApresRemise * 0.18) : 0;
 
-    // Retenue 5%
+    // ── Retenue 5% ──────────────────────────────────────
     this.retenue = this.factureForm.get('appliquer_retenue')?.value
-      ? this.totalApresRemise * 0.05 : 0;
+      ? Math.round(this.totalApresRemise * 0.05) : 0;
 
-    // BIC 2% = 2% de (HTVA Net + TVA)
+    // ── BIC 2% = 2% de (HT net + TVA) ──────────────────
     this.bic = this.factureForm.get('appliquer_bic')?.value
-      ? (this.totalApresRemise + this.tva) * 0.02 : 0;
+      ? Math.round((this.totalApresRemise + this.tva) * 0.02) : 0;
 
-    // Transport (montant manuel)
+    // ── Transport (montant manuel) ───────────────────────
     this.transport = this.factureForm.get('appliquer_transport')?.value
-      ? (parseFloat(this.factureForm.get('montant_transport')?.value) || 0) : 0;
+      ? Math.round(Number(this.factureForm.get('montant_transport')?.value) || 0) : 0;
 
-    // Total net
+    // ── Total net ────────────────────────────────────────
     this.totalNet = this.totalApresRemise + this.tva - this.retenue - this.bic + this.transport;
-
-    this.cdr.detectChanges();
   }
 
   onSubmit(): void {
@@ -217,13 +215,13 @@ export class FactureFormComponent implements OnInit {
       appliquer_retenue:   fv.appliquer_retenue,
       appliquer_bic:       fv.appliquer_bic,
       appliquer_transport: fv.appliquer_transport,
-      montant_transport:   fv.appliquer_transport ? fv.montant_transport : 0,
+      montant_transport:   fv.appliquer_transport ? Number(fv.montant_transport) : 0,
       lignes: fv.lignes.map((l: any, i: number) => ({
         description:           l.description,
         reference_client:      l.reference_client,
         reference_fournisseur: l.reference_fournisseur,
-        prix_unitaire_ht:      l.prix_unitaire_ht,
-        quantite:              l.quantite,
+        prix_unitaire_ht:      Number(l.prix_unitaire_ht),
+        quantite:              Number(l.quantite),
         delais:                l.delais,
         ordre:                 i + 1
       }))
