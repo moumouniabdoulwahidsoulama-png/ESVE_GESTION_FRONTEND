@@ -35,15 +35,15 @@ export class ClientFormComponent implements OnInit {
     private router: Router
   ) {
     this.clientForm = this.fb.group({
-      nom_entreprise:   ['', Validators.required],
-      contact_nom:      ['', Validators.required],
-      telephone:        ['', Validators.required],
-      email:            ['', Validators.required],
-      adresse:          ['', Validators.required],
-      rccm:             [''],
-      ifu:              [''],
-      regime_imposition:[''],
-      division_fiscale: ['']
+      nom_entreprise:    ['', Validators.required],
+      contact_nom:       [''],                          // ← plus required
+      telephone:         ['', Validators.required],
+      email:             ['', Validators.email],        // ← optionnel, format email si renseigné
+      adresse:           [''],                          // ← plus required
+      rccm:              [''],
+      ifu:               [''],
+      regime_imposition: [''],
+      division_fiscale:  ['']
     });
   }
 
@@ -71,15 +71,13 @@ export class ClientFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.clientForm.invalid) return;
-    this.isLoading     = true;
-    this.errorMessage  = '';
+    this.isLoading    = true;
+    this.errorMessage = '';
     const client: Client = this.clientForm.value;
 
     if (this.isEditMode && this.clientId) {
       this.clientService.update(this.clientId, client).subscribe({
-        next: () => {
-          this.router.navigate(['/clients']);
-        },
+        next: () => { this.router.navigate(['/clients']); },
         error: (error) => {
           console.error('Erreur mise à jour:', error);
           this.errorMessage = 'Erreur lors de la mise à jour';
@@ -88,9 +86,7 @@ export class ClientFormComponent implements OnInit {
       });
     } else {
       this.clientService.create(client).subscribe({
-        next: () => {
-          this.router.navigate(['/clients']);
-        },
+        next: () => { this.router.navigate(['/clients']); },
         error: (error) => {
           console.error('Erreur création:', error);
           this.errorMessage = 'Erreur lors de la création';
