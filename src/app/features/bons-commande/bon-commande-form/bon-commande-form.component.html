@@ -108,15 +108,37 @@
         ⚙️ Options de calcul (cochez ce qui s'applique)
       </h3>
       <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:center;">
+
+        <!-- TVA -->
         <mat-checkbox formControlName="appliquer_tva" color="primary">
           TVA 18%
         </mat-checkbox>
+
+        <!-- Retenue -->
         <mat-checkbox formControlName="appliquer_retenue" color="warn">
           Retenue 5%
         </mat-checkbox>
+
+        <!-- BIC -->
         <mat-checkbox formControlName="appliquer_bic" color="warn">
           BIC 2%
         </mat-checkbox>
+
+        <!-- Transport ← NOUVEAU -->
+        <div style="display:flex; align-items:center; gap:8px;">
+          <mat-checkbox formControlName="appliquer_transport" color="primary">
+            Transport
+          </mat-checkbox>
+          <mat-form-field appearance="outline" style="width:160px;"
+                          *ngIf="bonForm.get('appliquer_transport')?.value">
+            <mat-label>Montant transport (XOF)</mat-label>
+            <input matInput type="number" formControlName="montant_transport"
+                   min="0"
+                   (input)="calculerTotaux()"
+                   (change)="calculerTotaux()">
+          </mat-form-field>
+        </div>
+
       </div>
     </div>
 
@@ -154,12 +176,16 @@
 
         <mat-form-field appearance="outline" style="flex:1; min-width:120px;">
           <mat-label>Prix unitaire HT</mat-label>
-          <input matInput type="number" formControlName="prix_unitaire_ht">
+          <input matInput type="number" formControlName="prix_unitaire_ht"
+                 (input)="calculerTotaux()"
+                 (change)="calculerTotaux()">
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="flex:1; min-width:80px;">
           <mat-label>Quantité</mat-label>
-          <input matInput type="number" formControlName="quantite">
+          <input matInput type="number" formControlName="quantite"
+                 (input)="calculerTotaux()"
+                 (change)="calculerTotaux()">
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="flex:1; min-width:100px;">
@@ -183,37 +209,55 @@
       <mat-icon>add</mat-icon> Ajouter une ligne
     </button>
 
-    <!-- TOTAUX -->
+    <!-- RÉCAPITULATIF EN TEMPS RÉEL -->
     <mat-card style="margin-bottom:24px; background:#F5F5F5;">
       <mat-card-content>
 
+        <h3 style="margin:0 0 12px 0; color:#1A1A2E; font-size:14px; text-transform:uppercase;
+                   letter-spacing:1px;">
+          📊 Récapitulatif des calculs
+        </h3>
+
+        <!-- Montant HT brut -->
         <div style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0;">
           <span>Montant HT</span>
           <strong>{{ totalHT | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <div *ngIf="bonForm.get('appliquer_tva')?.value"
+        <!-- TVA -->
+        <div *ngIf="tva > 0"
              style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0; color:#1565C0;">
           <span>TVA (18%)</span>
           <strong>+ {{ tva | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <div *ngIf="bonForm.get('appliquer_retenue')?.value"
+        <!-- Retenue -->
+        <div *ngIf="retenue > 0"
              style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0; color:#B71C1C;">
           <span>Retenue (5%)</span>
-          <strong>- {{ retenue | number:'1.0-0' }} FCFA</strong>
+          <strong>− {{ retenue | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <div *ngIf="bonForm.get('appliquer_bic')?.value"
+        <!-- BIC -->
+        <div *ngIf="bic > 0"
              style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0; color:#B71C1C;">
           <span>BIC (2%)</span>
-          <strong>- {{ bic | number:'1.0-0' }} FCFA</strong>
+          <strong>− {{ bic | number:'1.0-0' }} FCFA</strong>
         </div>
 
+        <!-- Transport ← NOUVEAU -->
+        <div *ngIf="transport > 0"
+             style="display:flex; justify-content:space-between; padding:6px 0;
+                    border-bottom:1px solid #E0E0E0; color:#1B5E20;">
+          <span>Transport</span>
+          <strong>+ {{ transport | number:'1.0-0' }} FCFA</strong>
+        </div>
+
+        <!-- Total net -->
         <div style="display:flex; justify-content:space-between; padding:10px 12px;
                     background:#D4830A; color:white; margin-top:8px; border-radius:4px;">
           <span style="font-size:16px; font-weight:bold;">TOTAL NET</span>
