@@ -1,4 +1,3 @@
-
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -7,10 +6,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FactureService } from '../../../core/services/facture.service';
 import { ClientService, Client } from '../../../core/services/client.service';
@@ -21,8 +19,8 @@ import { ClientService, Client } from '../../../core/services/client.service';
   imports: [
     CommonModule, ReactiveFormsModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatButtonModule,
-    MatIconModule, MatDatepickerModule, MatNativeDateModule,
-    MatCardModule, MatCheckboxModule, RouterLink
+    MatIconModule, MatCardModule, MatCheckboxModule,
+    MatRadioModule, RouterLink
   ],
   templateUrl: './facture-form.component.html',
   styleUrls: ['./facture-form.component.scss']
@@ -35,7 +33,15 @@ export class FactureFormComponent implements OnInit {
   isLoading       = false;
   errorMessage    = '';
 
-  // Totaux affichés en temps réel
+  // Choix termes de paiement
+  termesPaiementOptions = [
+    '100% à la commande',
+    '15 jours date de facturation',
+    '30 jours date de facturation',
+    '60 jours date de facturation',
+  ];
+
+  // Totaux en temps réel
   totalHT          = 0;
   montantRemise    = 0;
   totalApresRemise = 0;
@@ -56,6 +62,7 @@ export class FactureFormComponent implements OnInit {
     this.factureForm = this.fb.group({
       client:              ['', Validators.required],
       type_doc:            ['PROFORMA', Validators.required],
+      termes_paiement:     ['100% à la commande'],   // ← NOUVEAU, défaut = 1er choix
       remise_pct:          [0, [Validators.min(0), Validators.max(100)]],
       notes:               [''],
       appliquer_remise:    [false],
@@ -92,7 +99,7 @@ export class FactureFormComponent implements OnInit {
       }
     });
 
-    // ✅ UNE SEULE subscription sur tout le formulaire — capte TOUS les changements
+    // Une seule subscription sur tout le formulaire
     this.factureForm.valueChanges.subscribe(() => {
       this.calculerTotaux();
       this.cdr.markForCheck();
@@ -112,6 +119,7 @@ export class FactureFormComponent implements OnInit {
         this.factureForm.patchValue({
           client:              facture.client,
           type_doc:            facture.type_doc,
+          termes_paiement:     facture.termes_paiement     || '100% à la commande',
           remise_pct:          facture.remise_pct          || 0,
           notes:               facture.notes               || '',
           appliquer_remise:    facture.appliquer_remise    || false,
@@ -123,7 +131,6 @@ export class FactureFormComponent implements OnInit {
         }, { emitEvent: false });
 
         while (this.lignes.length) { this.lignes.removeAt(0); }
-
         if (facture.lignes) {
           facture.lignes.forEach((l: any) => {
             this.lignes.push(this.creerLigneForm(l), { emitEvent: false });
@@ -161,36 +168,22 @@ export class FactureFormComponent implements OnInit {
   calculerTotaux(): void {
     const fv = this.factureForm.getRawValue();
 
-    // ── Lignes ──────────────────────────────────────────
     let total = 0;
     (fv.lignes || []).forEach((l: any) => {
       total += (Number(l.prix_unitaire_ht) || 0) * (Number(l.quantite) || 0);
     });
     this.totalHT = total;
 
-    // ── Remise ──────────────────────────────────────────
     const remisePct    = Number(fv.remise_pct) || 0;
     this.montantRemise = (fv.appliquer_remise && remisePct > 0)
       ? Math.round(total * remisePct / 100) : 0;
     this.totalApresRemise = total - this.montantRemise;
 
-    // ── TVA 18% ─────────────────────────────────────────
-    this.tva = fv.appliquer_tva
-      ? Math.round(this.totalApresRemise * 0.18) : 0;
+    this.tva     = fv.appliquer_tva      ? Math.round(this.totalApresRemise * 0.18) : 0;
+    this.retenue = fv.appliquer_retenue  ? Math.round(this.totalApresRemise * 0.05) : 0;
+    this.bic     = fv.appliquer_bic      ? Math.round((this.totalApresRemise + this.tva) * 0.02) : 0;
+    this.transport = fv.appliquer_transport ? Math.round(Number(fv.montant_transport) || 0) : 0;
 
-    // ── Retenue 5% ──────────────────────────────────────
-    this.retenue = fv.appliquer_retenue
-      ? Math.round(this.totalApresRemise * 0.05) : 0;
-
-    // ── BIC 2% ──────────────────────────────────────────
-    this.bic = fv.appliquer_bic
-      ? Math.round((this.totalApresRemise + this.tva) * 0.02) : 0;
-
-    // ── Transport ───────────────────────────────────────
-    this.transport = fv.appliquer_transport
-      ? Math.round(Number(fv.montant_transport) || 0) : 0;
-
-    // ── Total net ────────────────────────────────────────
     this.totalNet = this.totalApresRemise + this.tva - this.retenue - this.bic + this.transport;
   }
 
@@ -204,6 +197,7 @@ export class FactureFormComponent implements OnInit {
     const facture: any = {
       client:              fv.client,
       type_doc:            fv.type_doc,
+      termes_paiement:     fv.termes_paiement,
       remise_pct:          fv.appliquer_remise ? fv.remise_pct : 0,
       notes:               fv.notes,
       appliquer_remise:    fv.appliquer_remise,

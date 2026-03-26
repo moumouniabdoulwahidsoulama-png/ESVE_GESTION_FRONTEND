@@ -15,26 +15,27 @@ export interface LigneFacture {
 }
 
 export interface Facture {
-  id?:                number;
-  numero?:            string;
-  type_doc:           'PROFORMA' | 'FACTURE';
-  statut?:            string;
-  client:             number;
-  client_detail?:     any;
-  proforma_origine?:  number;
-  date_creation?:     string;
-  validite_jours?:    number;
+  id?:                  number;
+  numero?:              string;
+  type_doc:             'PROFORMA' | 'FACTURE';
+  statut?:              string;
+  client:               number;
+  client_detail?:       any;
+  proforma_origine?:    number;
+  date_creation?:       string;
+  validite_jours?:      number;
+  termes_paiement?:     string;   // ← AJOUTÉ
 
   // Options de calcul
   appliquer_remise?:    boolean;
   appliquer_tva?:       boolean;
   appliquer_retenue?:   boolean;
   appliquer_bic?:       boolean;
-  appliquer_transport?: boolean;   // ← AJOUTÉ
+  appliquer_transport?: boolean;
 
   // Montants
   remise_pct?:          number;
-  montant_transport?:   number;    // ← AJOUTÉ
+  montant_transport?:   number;
   total_ht_brut?:       number;
   montant_remise?:      number;
   total_ht?:            number;

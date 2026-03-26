@@ -25,6 +25,27 @@
       </mat-form-field>
     </div>
 
+    <!-- TERMES DE PAIEMENT -->
+    <div style="background:#FFF8E1; border-radius:8px; padding:16px; margin-bottom:20px;
+                border:1px solid #FFE082;">
+      <h3 style="margin:0 0 12px 0; color:#1A1A2E; font-size:15px;">
+        💳 Termes de paiement
+      </h3>
+      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <label *ngFor="let terme of termesPaiementOptions"
+               style="display:flex; align-items:center; gap:6px; cursor:pointer;
+                      padding:8px 14px; border-radius:20px; border:1.5px solid #E0E0E0;
+                      background:white; font-size:13px; transition:all 0.2s;"
+               [style.border-color]="factureForm.get('termes_paiement')?.value === terme ? '#D4A017' : '#E0E0E0'"
+               [style.background]="factureForm.get('termes_paiement')?.value === terme ? '#FFF3E0' : 'white'"
+               [style.font-weight]="factureForm.get('termes_paiement')?.value === terme ? '600' : 'normal'">
+          <input type="radio" formControlName="termes_paiement" [value]="terme"
+                 style="accent-color:#D4A017;">
+          {{ terme }}
+        </label>
+      </div>
+    </div>
+
     <!-- Notes -->
     <mat-form-field appearance="outline" style="width:100%; margin-bottom:16px;">
       <mat-label>Notes</mat-label>
@@ -38,50 +59,27 @@
       </h3>
       <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
 
-        <!-- Remise -->
         <div style="display:flex; align-items:center; gap:8px;">
-          <mat-checkbox formControlName="appliquer_remise" color="warn">
-            Remise
-          </mat-checkbox>
+          <mat-checkbox formControlName="appliquer_remise" color="warn">Remise</mat-checkbox>
           <mat-form-field appearance="outline"
                           [style.display]="factureForm.get('appliquer_remise')?.value ? 'block' : 'none'"
                           style="width:100px;">
             <mat-label>%</mat-label>
-            <input matInput type="number" formControlName="remise_pct"
-                   min="0" max="100"
-
->
+            <input matInput type="number" formControlName="remise_pct" min="0" max="100">
           </mat-form-field>
         </div>
 
-        <!-- TVA -->
-        <mat-checkbox formControlName="appliquer_tva" color="primary">
-          TVA 18%
-        </mat-checkbox>
+        <mat-checkbox formControlName="appliquer_tva" color="primary">TVA 18%</mat-checkbox>
+        <mat-checkbox formControlName="appliquer_retenue" color="warn">Retenue 5%</mat-checkbox>
+        <mat-checkbox formControlName="appliquer_bic" color="warn">BIC 2%</mat-checkbox>
 
-        <!-- Retenue -->
-        <mat-checkbox formControlName="appliquer_retenue" color="warn">
-          Retenue 5%
-        </mat-checkbox>
-
-        <!-- BIC -->
-        <mat-checkbox formControlName="appliquer_bic" color="warn">
-          BIC 2%
-        </mat-checkbox>
-
-        <!-- Transport -->
         <div style="display:flex; align-items:center; gap:8px;">
-          <mat-checkbox formControlName="appliquer_transport" color="primary">
-            Transport
-          </mat-checkbox>
+          <mat-checkbox formControlName="appliquer_transport" color="primary">Transport</mat-checkbox>
           <mat-form-field appearance="outline"
                           [style.display]="factureForm.get('appliquer_transport')?.value ? 'block' : 'none'"
                           style="width:150px;">
             <mat-label>Montant (XOF)</mat-label>
-            <input matInput type="number" formControlName="montant_transport"
-                   min="0"
-
->
+            <input matInput type="number" formControlName="montant_transport" min="0">
           </mat-form-field>
         </div>
 
@@ -113,18 +111,12 @@
 
         <mat-form-field appearance="outline" style="flex:1; min-width:120px;">
           <mat-label>Prix unitaire HT</mat-label>
-          <input matInput type="number" min="0"
-                 formControlName="prix_unitaire_ht"
-
->
+          <input matInput type="number" min="0" formControlName="prix_unitaire_ht">
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="flex:1; min-width:80px;">
           <mat-label>Quantité</mat-label>
-          <input matInput type="number" min="1"
-                 formControlName="quantite"
-
->
+          <input matInput type="number" min="1" formControlName="quantite">
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="flex:1; min-width:100px;">
@@ -150,20 +142,16 @@
     <!-- RÉCAPITULATIF EN TEMPS RÉEL -->
     <mat-card style="margin-bottom:24px; background:#F5F5F5;">
       <mat-card-content>
-
-        <h3 style="margin:0 0 12px 0; color:#1A1A2E; font-size:14px; text-transform:uppercase;
-                   letter-spacing:1px;">
+        <h3 style="margin:0 0 12px 0; color:#1A1A2E; font-size:14px;
+                   text-transform:uppercase; letter-spacing:1px;">
           📊 Récapitulatif des calculs
         </h3>
 
-        <!-- Montant brut -->
-        <div style="display:flex; justify-content:space-between; padding:6px 0;
-                    border-bottom:1px solid #E0E0E0;">
+        <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #E0E0E0;">
           <span>Montant HTVA brut</span>
           <strong>{{ totalHT | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <!-- Remise -->
         <div *ngIf="montantRemise > 0"
              style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0; color:#E65100;">
@@ -171,15 +159,12 @@
           <strong>− {{ montantRemise | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <!-- Montant HT net après remise -->
         <div *ngIf="montantRemise > 0"
-             style="display:flex; justify-content:space-between; padding:6px 0;
-                    border-bottom:1px solid #E0E0E0;">
+             style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #E0E0E0;">
           <span>Montant HTVA net</span>
           <strong>{{ totalApresRemise | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <!-- TVA -->
         <div *ngIf="tva > 0"
              style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0; color:#1565C0;">
@@ -187,7 +172,6 @@
           <strong>+ {{ tva | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <!-- Retenue -->
         <div *ngIf="retenue > 0"
              style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0; color:#B71C1C;">
@@ -195,7 +179,6 @@
           <strong>− {{ retenue | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <!-- BIC -->
         <div *ngIf="bic > 0"
              style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0; color:#B71C1C;">
@@ -203,7 +186,6 @@
           <strong>− {{ bic | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <!-- Transport ← NOUVEAU -->
         <div *ngIf="transport > 0"
              style="display:flex; justify-content:space-between; padding:6px 0;
                     border-bottom:1px solid #E0E0E0; color:#1B5E20;">
@@ -211,13 +193,11 @@
           <strong>+ {{ transport | number:'1.0-0' }} FCFA</strong>
         </div>
 
-        <!-- Total net -->
         <div style="display:flex; justify-content:space-between; padding:10px 12px;
                     background:#D4830A; color:white; margin-top:8px; border-radius:4px;">
           <span style="font-size:16px; font-weight:bold;">TOTAL NET</span>
           <strong style="font-size:16px;">{{ totalNet | number:'1.0-0' }} FCFA</strong>
         </div>
-
       </mat-card-content>
     </mat-card>
 
