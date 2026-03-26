@@ -109,6 +109,17 @@
       </h3>
       <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:center;">
 
+        <!-- Remise ← AJOUTÉ -->
+        <div style="display:flex; align-items:center; gap:8px;">
+          <mat-checkbox formControlName="appliquer_remise" color="warn">Remise</mat-checkbox>
+          <mat-form-field appearance="outline"
+                          [style.display]="bonForm.get('appliquer_remise')?.value ? 'block' : 'none'"
+                          style="width:100px;">
+            <mat-label>%</mat-label>
+            <input matInput type="number" formControlName="remise_pct" min="0" max="100">
+          </mat-form-field>
+        </div>
+
         <!-- TVA -->
         <mat-checkbox formControlName="appliquer_tva" color="primary">
           TVA 18%
@@ -223,6 +234,14 @@
                     border-bottom:1px solid #E0E0E0;">
           <span>Montant HT</span>
           <strong>{{ totalHT | number:'1.0-0' }} FCFA</strong>
+        </div>
+
+        <!-- Remise -->
+        <div *ngIf="remise > 0"
+             style="display:flex; justify-content:space-between; padding:6px 0;
+                    border-bottom:1px solid #E0E0E0; color:#E65100;">
+          <span>Remise ({{ bonForm.get('remise_pct')?.value }}%)</span>
+          <strong>− {{ remise | number:'1.0-0' }} FCFA</strong>
         </div>
 
         <!-- TVA -->

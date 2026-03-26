@@ -8,7 +8,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatRadioModule } from '@angular/material/radio';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FactureService } from '../../../core/services/facture.service';
 import { ClientService, Client } from '../../../core/services/client.service';
@@ -20,20 +19,20 @@ import { ClientService, Client } from '../../../core/services/client.service';
     CommonModule, ReactiveFormsModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatButtonModule,
     MatIconModule, MatCardModule, MatCheckboxModule,
-    MatRadioModule, RouterLink
+    RouterLink
+    // MatRadioModule retiré — on utilise des <input type="radio"> natifs
   ],
   templateUrl: './facture-form.component.html',
   styleUrls: ['./facture-form.component.scss']
 })
 export class FactureFormComponent implements OnInit {
-  factureForm:      FormGroup;
-  isEditMode      = false;
-  factureId?:       number;
-  clients:          Client[] = [];
-  isLoading       = false;
-  errorMessage    = '';
+  factureForm:   FormGroup;
+  isEditMode   = false;
+  factureId?:    number;
+  clients:       Client[] = [];
+  isLoading    = false;
+  errorMessage = '';
 
-  // Choix termes de paiement
   termesPaiementOptions = [
     '100% à la commande',
     '15 jours date de facturation',
@@ -41,7 +40,6 @@ export class FactureFormComponent implements OnInit {
     '60 jours date de facturation',
   ];
 
-  // Totaux en temps réel
   totalHT          = 0;
   montantRemise    = 0;
   totalApresRemise = 0;
@@ -62,7 +60,8 @@ export class FactureFormComponent implements OnInit {
     this.factureForm = this.fb.group({
       client:              ['', Validators.required],
       type_doc:            ['PROFORMA', Validators.required],
-      termes_paiement:     ['100% à la commande'],   // ← NOUVEAU, défaut = 1er choix
+      termes_paiement:     ['100% à la commande'],
+      validite_jours:      [30],
       remise_pct:          [0, [Validators.min(0), Validators.max(100)]],
       notes:               [''],
       appliquer_remise:    [false],
@@ -99,10 +98,10 @@ export class FactureFormComponent implements OnInit {
       }
     });
 
-    // Une seule subscription sur tout le formulaire
+    // ✅ detectChanges() au lieu de markForCheck() — fonctionne avec la stratégie par défaut
     this.factureForm.valueChanges.subscribe(() => {
       this.calculerTotaux();
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     });
   }
 
@@ -120,6 +119,7 @@ export class FactureFormComponent implements OnInit {
           client:              facture.client,
           type_doc:            facture.type_doc,
           termes_paiement:     facture.termes_paiement     || '100% à la commande',
+          validite_jours:      facture.validite_jours      || 30,
           remise_pct:          facture.remise_pct          || 0,
           notes:               facture.notes               || '',
           appliquer_remise:    facture.appliquer_remise    || false,
@@ -155,9 +155,7 @@ export class FactureFormComponent implements OnInit {
     });
   }
 
-  ajouterLigne(): void {
-    this.lignes.push(this.creerLigneForm());
-  }
+  ajouterLigne(): void { this.lignes.push(this.creerLigneForm()); }
 
   supprimerLigne(i: number): void {
     this.lignes.removeAt(i);
@@ -167,23 +165,19 @@ export class FactureFormComponent implements OnInit {
 
   calculerTotaux(): void {
     const fv = this.factureForm.getRawValue();
-
     let total = 0;
     (fv.lignes || []).forEach((l: any) => {
       total += (Number(l.prix_unitaire_ht) || 0) * (Number(l.quantite) || 0);
     });
     this.totalHT = total;
-
     const remisePct    = Number(fv.remise_pct) || 0;
     this.montantRemise = (fv.appliquer_remise && remisePct > 0)
       ? Math.round(total * remisePct / 100) : 0;
     this.totalApresRemise = total - this.montantRemise;
-
-    this.tva     = fv.appliquer_tva      ? Math.round(this.totalApresRemise * 0.18) : 0;
-    this.retenue = fv.appliquer_retenue  ? Math.round(this.totalApresRemise * 0.05) : 0;
-    this.bic     = fv.appliquer_bic      ? Math.round((this.totalApresRemise + this.tva) * 0.02) : 0;
+    this.tva      = fv.appliquer_tva      ? Math.round(this.totalApresRemise * 0.18) : 0;
+    this.retenue  = fv.appliquer_retenue  ? Math.round(this.totalApresRemise * 0.05) : 0;
+    this.bic      = fv.appliquer_bic      ? Math.round((this.totalApresRemise + this.tva) * 0.02) : 0;
     this.transport = fv.appliquer_transport ? Math.round(Number(fv.montant_transport) || 0) : 0;
-
     this.totalNet = this.totalApresRemise + this.tva - this.retenue - this.bic + this.transport;
   }
 
@@ -191,13 +185,12 @@ export class FactureFormComponent implements OnInit {
     if (this.factureForm.invalid) return;
     this.isLoading    = true;
     this.errorMessage = '';
-
     const fv = this.factureForm.getRawValue();
-
     const facture: any = {
       client:              fv.client,
       type_doc:            fv.type_doc,
       termes_paiement:     fv.termes_paiement,
+      validite_jours:      fv.validite_jours,
       remise_pct:          fv.appliquer_remise ? fv.remise_pct : 0,
       notes:               fv.notes,
       appliquer_remise:    fv.appliquer_remise,
@@ -216,11 +209,9 @@ export class FactureFormComponent implements OnInit {
         ordre:                 i + 1
       }))
     };
-
     const action = this.isEditMode && this.factureId
       ? this.factureService.update(this.factureId, facture)
       : this.factureService.create(facture);
-
     action.subscribe({
       next: () => this.router.navigate(['/factures']),
       error: (e) => {
