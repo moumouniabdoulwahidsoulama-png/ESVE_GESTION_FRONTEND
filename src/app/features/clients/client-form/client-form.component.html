@@ -76,5 +76,7 @@
       <button mat-button type="button" routerLink="/clients">Annuler</button>
     </div>
 
+    <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" autocomplete="off"></form>
+
   </form>
 </div>

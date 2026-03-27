@@ -6,6 +6,9 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  getCurrentUserId(): number {
+    throw new Error('Method not implemented.');
+  }
   private apiUrl = '/api/v1/auth';
 
   constructor(
