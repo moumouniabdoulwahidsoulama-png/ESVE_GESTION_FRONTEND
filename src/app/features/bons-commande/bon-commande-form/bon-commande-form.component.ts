@@ -32,6 +32,14 @@ export class BonCommandeFormComponent implements OnInit {
   isLoading    = false;
   errorMessage = '';
 
+  termesPaiementOptions = [
+    'Aucun',
+    '100% à la commande',
+    '15 jours date de facturation',
+    '30 jours date de facturation',
+    '60 jours date de facturation',
+  ];
+
   totalHT   = 0;
   remise    = 0;
   tva       = 0;
@@ -59,9 +67,10 @@ export class BonCommandeFormComponent implements OnInit {
       fournisseur_regime:           [''],
       ref_proforma_fournisseur:     [''],
       date_proforma_fournisseur:    [''],
-      termes_paiement:              ['100% 30 Jours après la livraison'],
+      termes_paiement:              ['100% à la commande'],
       termes_livraison:             ['DDP/OUAGADOUGOU'],
       delais_livraison:             [''],
+      validite_jours:               [30],
       objet:                        [''],
       notes:                        [''],
       date_livraison_prev:          [''],
@@ -120,9 +129,10 @@ export class BonCommandeFormComponent implements OnInit {
           fournisseur_regime:           bon.fournisseur_regime,
           ref_proforma_fournisseur:     bon.ref_proforma_fournisseur,
           date_proforma_fournisseur:    bon.date_proforma_fournisseur,
-          termes_paiement:              bon.termes_paiement,
+          termes_paiement:              bon.termes_paiement     || '100% à la commande',
           termes_livraison:             bon.termes_livraison,
           delais_livraison:             bon.delais_livraison,
+          validite_jours:               bon.validite_jours      || 30,
           objet:                        bon.objet,
           notes:                        bon.notes,
           appliquer_remise:             bon.appliquer_remise    || false,
@@ -218,6 +228,7 @@ export class BonCommandeFormComponent implements OnInit {
       termes_paiement:              fv.termes_paiement,
       termes_livraison:             fv.termes_livraison,
       delais_livraison:             fv.delais_livraison,
+      validite_jours:               fv.validite_jours || 30,
       objet:                        fv.objet,
       notes:                        fv.notes,
       date_livraison_prev:          formatDate(fv.date_livraison_prev),

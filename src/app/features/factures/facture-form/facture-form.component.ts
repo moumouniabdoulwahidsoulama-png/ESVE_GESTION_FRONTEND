@@ -34,6 +34,7 @@ export class FactureFormComponent implements OnInit {
   errorMessage = '';
 
   termesPaiementOptions = [
+    'Aucun',
     '100% à la commande',
     '15 jours date de facturation',
     '30 jours date de facturation',
