@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpClient } from '@angular/common/http';
-
+import { AuthService } from '../../../core/services/auth.service';
 
 interface Utilisateur {
   id:         number;
@@ -118,14 +118,13 @@ export class UtilisateursComponent implements OnInit {
   successMessage    = '';
   currentUserId     = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http:        HttpClient,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    // Récupère l'ID de l'utilisateur connecté depuis le profil
-    this.http.get<any>('/api/v1/comptes/me/').subscribe({
-      next: (me) => { this.currentUserId = me.id || 0; },
-      error: () => {}
-    });
+    this.currentUserId = this.authService.getCurrentUserId();
     this.loadUtilisateurs();
   }
 

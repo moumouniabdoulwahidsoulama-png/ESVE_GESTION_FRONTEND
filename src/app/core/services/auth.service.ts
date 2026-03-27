@@ -6,9 +6,6 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  getCurrentUserId(): number {
-    throw new Error('Method not implemented.');
-  }
   private apiUrl = '/api/v1/auth';
 
   constructor(
@@ -16,17 +13,26 @@ export class AuthService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
+  // ✅ CORRIGÉ — lit l'ID depuis localStorage
+  getCurrentUserId(): number {
+    if (isPlatformBrowser(this.platformId)) {
+      return parseInt(localStorage.getItem('user_id') || '0', 10);
+    }
+    return 0;
+  }
+
   login(email: string, password: string): Observable<any> {
-  return this.http.post<any>(`${this.apiUrl}/login/`, { username: email, password })
-    .pipe(
-      tap(response => {
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('access_token',  response.access);
-          localStorage.setItem('refresh_token', response.refresh);
-        }
-      })
-    );
-}
+    return this.http.post<any>(`${this.apiUrl}/login/`, { username: email, password })
+      .pipe(
+        tap(response => {
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('access_token',  response.access);
+            localStorage.setItem('refresh_token', response.refresh);
+          }
+        })
+      );
+  }
+
   chargerProfil(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/me/`).pipe(
       tap(profil => {
@@ -63,21 +69,10 @@ export class AuthService {
     return 'EMPLOYE';
   }
 
-  isAdmin(): boolean {
-    return this.getRole() === 'ADMIN';
-  }
-
-  isEmploye(): boolean {
-    return this.getRole() === 'ADMIN' || this.getRole() === 'EMPLOYE';
-  }
-
-  isClient(): boolean {
-    return this.getRole() === 'CLIENT';
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
+  isAdmin(): boolean   { return this.getRole() === 'ADMIN'; }
+  isEmploye(): boolean { return this.getRole() === 'ADMIN' || this.getRole() === 'EMPLOYE'; }
+  isClient(): boolean  { return this.getRole() === 'CLIENT'; }
+  isLoggedIn(): boolean { return !!this.getToken(); }
 
   refreshToken(): Observable<any> {
     const refresh = isPlatformBrowser(this.platformId)
