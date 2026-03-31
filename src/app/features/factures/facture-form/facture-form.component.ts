@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FactureService } from '../../../core/services/facture.service';
 import { ClientService, Client } from '../../../core/services/client.service';
@@ -19,8 +21,8 @@ import { ClientService, Client } from '../../../core/services/client.service';
     CommonModule, ReactiveFormsModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatButtonModule,
     MatIconModule, MatCardModule, MatCheckboxModule,
+    MatDatepickerModule, MatNativeDateModule,
     RouterLink
-    // MatRadioModule retiré — on utilise des <input type="radio"> natifs
   ],
   templateUrl: './facture-form.component.html',
   styleUrls: ['./facture-form.component.scss']
@@ -60,6 +62,8 @@ export class FactureFormComponent implements OnInit {
     this.factureForm = this.fb.group({
       client:              ['', Validators.required],
       type_doc:            ['PROFORMA', Validators.required],
+      // ✅ date_creation éditable — valeur par défaut = aujourd'hui au format YYYY-MM-DD
+      date_creation:       [this.today(), Validators.required],
       termes_paiement:     ['100% à la commande'],
       validite_jours:      [30],
       remise_pct:          [0, [Validators.min(0), Validators.max(100)]],
@@ -72,6 +76,11 @@ export class FactureFormComponent implements OnInit {
       montant_transport:   [0, Validators.min(0)],
       lignes:              this.fb.array([])
     });
+  }
+
+  // Retourne la date d'aujourd'hui au format YYYY-MM-DD
+  today(): string {
+    return new Date().toISOString().split('T')[0];
   }
 
   get lignes(): FormArray {
@@ -98,7 +107,6 @@ export class FactureFormComponent implements OnInit {
       }
     });
 
-    // ✅ detectChanges() au lieu de markForCheck() — fonctionne avec la stratégie par défaut
     this.factureForm.valueChanges.subscribe(() => {
       this.calculerTotaux();
       this.cdr.detectChanges();
@@ -118,6 +126,8 @@ export class FactureFormComponent implements OnInit {
         this.factureForm.patchValue({
           client:              facture.client,
           type_doc:            facture.type_doc,
+          // ✅ Charger la date existante
+          date_creation:       facture.date_creation || this.today(),
           termes_paiement:     facture.termes_paiement     || '100% à la commande',
           validite_jours:      facture.validite_jours      || 30,
           remise_pct:          facture.remise_pct          || 0,
@@ -189,6 +199,8 @@ export class FactureFormComponent implements OnInit {
     const facture: any = {
       client:              fv.client,
       type_doc:            fv.type_doc,
+      // ✅ Envoyer la date choisie
+      date_creation:       fv.date_creation,
       termes_paiement:     fv.termes_paiement,
       validite_jours:      fv.validite_jours,
       remise_pct:          fv.appliquer_remise ? fv.remise_pct : 0,

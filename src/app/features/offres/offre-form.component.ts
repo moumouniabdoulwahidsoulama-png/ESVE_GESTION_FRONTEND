@@ -24,7 +24,7 @@ import { HttpClient } from '@angular/common/http';
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px;">
     <div>
       <h1 style="margin:0; font-size:24px; color:#1A1A2E;">
-        {{ isEditMode ? 'Modifier l\'offre' : 'Nouvelle offre de service' }}
+        {{ isEditMode ? "Modifier l'offre" : 'Nouvelle offre de service' }}
       </h1>
       <p style="margin:4px 0 0; color:#888; font-size:14px;">
         Personnalisez et téléchargez en PDF (FR ou EN)
@@ -129,7 +129,7 @@ import { HttpClient } from '@angular/common/http';
         {{ isSaving ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Sauvegarder') }}
       </button>
 
-      <!-- Télécharger PDF sans sauvegarder -->
+      <!-- Télécharger PDF -->
       <button mat-raised-button type="button"
               [disabled]="isDownloading"
               (click)="telecharger()"
@@ -151,10 +151,10 @@ import { HttpClient } from '@angular/common/http';
   `
 })
 export class OffreFormComponent implements OnInit {
-  form:         FormGroup;
-  isEditMode  = false;
-  offreId?:     number;
-  isSaving    = false;
+  form:           FormGroup;
+  isEditMode    = false;
+  offreId?:       number;
+  isSaving      = false;
   isDownloading = false;
   errorMessage  = '';
   successMessage = '';
@@ -204,7 +204,6 @@ export class OffreFormComponent implements OnInit {
           societe:      o.societe,
           texte_custom: o.texte_custom,
         });
-        // Remplir les destinataires
         const dests = o.destinataires || [];
         for (let i = 0; i < 3; i++) {
           const ctrl = this.destinataires.at(i) as FormGroup;
@@ -214,7 +213,7 @@ export class OffreFormComponent implements OnInit {
           });
         }
       },
-      error: () => { this.errorMessage = 'Impossible de charger l\'offre.'; }
+      error: () => { this.errorMessage = "Impossible de charger l'offre."; }
     });
   }
 
@@ -241,10 +240,11 @@ export class OffreFormComponent implements OnInit {
     req.subscribe({
       next: () => {
         this.isSaving = false;
-        this.router.navigate(['/offres']);
+        this.successMessage = this.isEditMode ? 'Offre mise à jour !' : 'Offre sauvegardée !';
+        setTimeout(() => this.router.navigate(['/offres']), 1000);
       },
       error: () => {
-        this.errorMessage = 'Erreur lors de l\'enregistrement.';
+        this.errorMessage = "Erreur lors de l'enregistrement.";
         this.isSaving = false;
       }
     });
@@ -255,7 +255,8 @@ export class OffreFormComponent implements OnInit {
     this.errorMessage  = '';
     const payload = this.getPayload();
 
-    this.http.post('/api/v1/offres/generer/', payload, {
+    // ✅ URL corrigée : /api/v1/offres/generer-pdf/ au lieu de /api/v1/offres/generer/
+    this.http.post('/api/v1/offres/generer-pdf/', payload, {
       responseType: 'blob', observe: 'response'
     }).subscribe({
       next: (resp) => {

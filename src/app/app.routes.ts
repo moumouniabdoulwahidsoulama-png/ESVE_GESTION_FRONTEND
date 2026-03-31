@@ -110,6 +110,10 @@ export const routes: Routes = [
       .then(m => m.OffreFormComponent)
   },
 
+  { path: 'corbeille', 
+    loadComponent: () => import('./features/corbeille/corbeille.component')
+      .then(m => m.CorbeilleComponent) },
+
   { path: '',   redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' }
 ];
