@@ -96,8 +96,18 @@ export const routes: Routes = [
 
   {
     path: 'offres',
-    loadComponent: () => import('./features/offres/offre-service.component')
-      .then(m => m.OffreServiceComponent)
+    loadComponent: () => import('./features/offres/offre-list.component')
+      .then(m => m.OffreListComponent)
+  },
+  {
+    path: 'offres/new',
+    loadComponent: () => import('./features/offres/offre-form.component')
+      .then(m => m.OffreFormComponent)
+  },
+  {
+    path: 'offres/edit/:id',
+    loadComponent: () => import('./features/offres/offre-form.component')
+      .then(m => m.OffreFormComponent)
   },
 
   { path: '',   redirectTo: 'dashboard', pathMatch: 'full' },
