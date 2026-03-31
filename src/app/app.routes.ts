@@ -94,6 +94,12 @@ export const routes: Routes = [
     .then(m => m.UtilisateursComponent)
   },
 
+  {
+    path: 'offres',
+    loadComponent: () => import('./features/offres/offre-service.component')
+      .then(m => m.OffreServiceComponent)
+  },
+
   { path: '',   redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' }
 ];
