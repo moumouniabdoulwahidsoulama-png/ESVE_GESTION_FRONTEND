@@ -66,7 +66,7 @@
         <a routerLink="/factures" routerLinkActive="active-link"
            style="display:flex; align-items:center; gap:12px; padding:10px 20px;
                   color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">
-          <span>🧾</span><span>Factures & Proformas</span>
+          <span>🧾</span><span>Factures &amp; Proformas</span>
         </a>
 
         <a routerLink="/bons-commande" routerLinkActive="active-link"
@@ -76,8 +76,8 @@
         </a>
 
         <a routerLink="/offres" routerLinkActive="active-link"
-          style="display:flex; align-items:center; gap:12px; padding:10px 20px;
-                color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">
+           style="display:flex; align-items:center; gap:12px; padding:10px 20px;
+                  color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">
           <span>📄</span><span>Offres de service</span>
         </a>
 
@@ -107,6 +107,14 @@
                   color:rgba(255,255,255,0.5); text-decoration:none; font-size:12px;">
           <span>＋</span><span>Nouveau bon</span>
         </a>
+
+        <a routerLink="/offres/new"
+           style="display:flex; align-items:center; gap:10px;
+                  padding:8px 20px 8px 32px;
+                  color:rgba(255,255,255,0.5); text-decoration:none; font-size:12px;">
+          <span>＋</span><span>Nouvelle offre</span>
+        </a>
+
       </div>
 
       <div *ngIf="isClient()">
