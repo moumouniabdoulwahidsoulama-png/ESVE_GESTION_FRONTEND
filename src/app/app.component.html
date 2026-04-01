@@ -6,7 +6,7 @@
               position:fixed; left:0; top:0; z-index:100;
               display:flex; flex-direction:column;">
 
-    <!-- Logo fixe en haut -->
+    <!-- Logo -->
     <div style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.1);
                 display:flex; align-items:center; gap:12px; flex-shrink:0;">
       <img src="assets/logo-esve.jpg" alt="ESVE Logo"
@@ -22,9 +22,8 @@
       </div>
     </div>
 
-    <!-- Navigation scrollable -->
-    <nav style="flex:1; padding:8px 0; overflow-y:auto;
-                overflow-x:hidden; min-height:0;">
+    <!-- Navigation -->
+    <nav style="flex:1; padding:8px 0; overflow-y:auto; overflow-x:hidden; min-height:0;">
 
       <a routerLink="/dashboard" routerLinkActive="active-link"
          style="display:flex; align-items:center; gap:12px; padding:10px 20px;
@@ -45,13 +44,14 @@
       </a>
 
       <a *ngIf="isAdmin()" routerLink="/admin/utilisateurs" routerLinkActive="active-link"
-          style="display:flex; align-items:center; gap:12px; padding:10px 20px;
-          color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">
+         style="display:flex; align-items:center; gap:12px; padding:10px 20px;
+                color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">
         <span>👥</span><span>Utilisateurs</span>
       </a>
 
       <div *ngIf="isEmploye()">
-        <div style="padding:8px 20px 4px 20px; font-size:10px;
+
+        <div style="padding:8px 20px 4px; font-size:10px;
                     color:rgba(255,255,255,0.3); text-transform:uppercase;
                     letter-spacing:1px; margin-top:4px;">
           Commercial
@@ -81,7 +81,14 @@
           <span>📄</span><span>Offres de service</span>
         </a>
 
-        <div style="padding:8px 20px 4px 20px; font-size:10px;
+        <!-- Corbeille -->
+        <a routerLink="/corbeille" routerLinkActive="active-link"
+           style="display:flex; align-items:center; gap:12px; padding:10px 20px;
+                  color:rgba(255,100,100,0.7); text-decoration:none; font-size:13px;">
+          <span>🗑️</span><span>Corbeille</span>
+        </a>
+
+        <div style="padding:8px 20px 4px; font-size:10px;
                     color:rgba(255,255,255,0.3); text-transform:uppercase;
                     letter-spacing:1px; margin-top:4px;">
           Création rapide
@@ -117,14 +124,8 @@
 
       </div>
 
-      <a routerLink="/corbeille" routerLinkActive="active-link"
-         style="display:flex; align-items:center; gap:12px; padding:10px 20px;
-                color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">
-        <span>🗑️</span><span>Corbeille</span>
-      </a>
-
       <div *ngIf="isClient()">
-        <div style="padding:8px 20px 4px 20px; font-size:10px;
+        <div style="padding:8px 20px 4px; font-size:10px;
                     color:rgba(255,255,255,0.3); text-transform:uppercase;">
           Mes documents
         </div>
@@ -144,9 +145,7 @@
       <div style="margin:12px 16px; padding:8px 12px;
                   background:rgba(212,131,10,0.2); border-radius:6px;
                   border-left:3px solid #D4830A;">
-        <p style="color:#D4830A; margin:0; font-size:11px; font-weight:bold;">
-          {{ getRole() }}
-        </p>
+        <p style="color:#D4830A; margin:0; font-size:11px; font-weight:bold;">{{ getRole() }}</p>
         <p style="color:rgba(255,255,255,0.4); margin:0; font-size:10px;">
           {{ isAdmin() ? 'Accès complet' : isEmploye() ? 'Accès employé' : 'Accès client' }}
         </p>
@@ -154,9 +153,8 @@
 
     </nav>
 
-    <!-- Footer fixe en bas -->
-    <div style="padding:12px 16px; border-top:1px solid rgba(255,255,255,0.1);
-                flex-shrink:0;">
+    <!-- Footer -->
+    <div style="padding:12px 16px; border-top:1px solid rgba(255,255,255,0.1); flex-shrink:0;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
         <div style="width:32px; height:32px; border-radius:50%; background:#D4830A;
                     display:flex; align-items:center; justify-content:center;
@@ -170,7 +168,7 @@
               style="width:100%; padding:8px; background:rgba(255,50,50,0.2);
                      border:1px solid rgba(255,50,50,0.4); border-radius:6px;
                      color:rgba(255,255,255,0.8); cursor:pointer;
-                     font-size:12px; font-weight:bold; text-align:center;">
+                     font-size:12px; font-weight:bold;">
         🚪 Déconnexion
       </button>
     </div>

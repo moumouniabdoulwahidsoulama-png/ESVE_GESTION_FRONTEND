@@ -32,7 +32,7 @@ export const routes: Routes = [
       .then(m => m.ClientFormComponent)
   },
 
-  // Factures
+  // Factures & Proformas
   {
     path: 'factures',
     loadComponent: () => import('./features/factures/facture-list/facture-list.component')
@@ -76,24 +76,7 @@ export const routes: Routes = [
       .then(m => m.BonCommandeFormComponent)
   },
 
-  {
-  path: 'vitrine',
-  loadComponent: () => import('./features/public/landing/landing.component')
-    .then(m => m.LandingComponent)
-  },
-
-  {
-  path: 'admin/demandes',
-  loadComponent: () => import('./features/admin/demandes/demandes.component')
-    .then(m => m.DemandesComponent)
-  },
-
-  {
-  path: 'admin/utilisateurs',
-  loadComponent: () => import('./features/admin/utilisateurs/utilisateurs.component')
-    .then(m => m.UtilisateursComponent)
-  },
-
+  // Offres de service
   {
     path: 'offres',
     loadComponent: () => import('./features/offres/offre-list.component')
@@ -110,9 +93,31 @@ export const routes: Routes = [
       .then(m => m.OffreFormComponent)
   },
 
-  { path: 'corbeille', 
+  // Corbeille
+  {
+    path: 'corbeille',
     loadComponent: () => import('./features/corbeille/corbeille.component')
-      .then(m => m.CorbeilleComponent) },
+      .then(m => m.CorbeilleComponent)
+  },
+
+  // Pages admin
+  {
+    path: 'admin/demandes',
+    loadComponent: () => import('./features/admin/demandes/demandes.component')
+      .then(m => m.DemandesComponent)
+  },
+  {
+    path: 'admin/utilisateurs',
+    loadComponent: () => import('./features/admin/utilisateurs/utilisateurs.component')
+      .then(m => m.UtilisateursComponent)
+  },
+
+  // Page vitrine
+  {
+    path: 'vitrine',
+    loadComponent: () => import('./features/public/landing/landing.component')
+      .then(m => m.LandingComponent)
+  },
 
   { path: '',   redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' }
