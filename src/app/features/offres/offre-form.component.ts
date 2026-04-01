@@ -66,10 +66,20 @@ import { HttpClient } from '@angular/common/http';
     <mat-card style="margin-bottom:20px; border-left:4px solid #D4A017;">
       <mat-card-content style="padding:20px;">
         <h3 style="margin:0 0 16px; color:#1A1A2E; font-size:15px;">🏢 Société bénéficiaire</h3>
-        <mat-form-field appearance="outline" style="width:100%;">
+        <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
           <mat-label>Nom de la société</mat-label>
           <input matInput formControlName="societe" placeholder="Ex: SOMISA, IAMGOLD, Endeavour...">
         </mat-form-field>
+        <div style="display:flex; gap:16px; flex-wrap:wrap;">
+          <mat-form-field appearance="outline" style="flex:2; min-width:200px;">
+            <mat-label>Adresse (optionnel)</mat-label>
+            <input matInput formControlName="adresse" placeholder="Ex: 01 BP 1234 Ouagadougou">
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="flex:1; min-width:160px;">
+            <mat-label>Date du document (optionnel)</mat-label>
+            <input matInput formControlName="date_doc" placeholder="Ex: 01 avril 2026">
+          </mat-form-field>
+        </div>
       </mat-card-content>
     </mat-card>
 
@@ -170,6 +180,8 @@ export class OffreFormComponent implements OnInit {
     this.form = this.fb.group({
       langue:       ['fr'],
       societe:      [''],
+      adresse:      [''],
+      date_doc:     [''],
       texte_custom: [''],
       destinataires: this.fb.array([
         this.fb.group({ nom: [''], fonction: [''] }),
@@ -199,6 +211,8 @@ export class OffreFormComponent implements OnInit {
         this.form.patchValue({
           langue:       o.langue,
           societe:      o.societe,
+          adresse:      o.adresse      || '',
+          date_doc:     o.date_doc     || '',
           texte_custom: o.texte_custom,
         });
         const dests = o.destinataires || [];
@@ -218,7 +232,9 @@ export class OffreFormComponent implements OnInit {
     const fv = this.form.getRawValue();
     return {
       langue:        fv.langue,
-      societe:       (fv.societe || '').trim(),
+      societe:       (fv.societe    || '').trim(),
+      adresse:       (fv.adresse    || '').trim(),
+      date_doc:      (fv.date_doc   || '').trim(),
       texte_custom:  (fv.texte_custom || '').trim(),
       destinataires: fv.destinataires.filter(
         (d: any) => (d.nom || '').trim() || (d.fonction || '').trim()
