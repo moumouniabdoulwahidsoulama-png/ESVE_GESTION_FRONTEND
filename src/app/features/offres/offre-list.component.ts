@@ -156,9 +156,22 @@ export class OffreListComponent implements OnInit {
 
   load(): void {
     this.isLoading = true;
-    this.http.get<Offre[]>('/api/v1/offres/').subscribe({
-      next:  (data) => { this.offres = data; this.isLoading = false; },
-      error: ()     => { this.errorMessage = 'Impossible de charger les offres.'; this.isLoading = false; }
+    this.http.get<any>('/api/v1/offres/').subscribe({
+      next: (data) => {
+        // Gère les deux formats : liste directe ou paginé {results: [...]}
+        if (Array.isArray(data)) {
+          this.offres = data;
+        } else if (data && Array.isArray(data.results)) {
+          this.offres = data.results;
+        } else {
+          this.offres = [];
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Impossible de charger les offres.';
+        this.isLoading = false;
+      }
     });
   }
 
