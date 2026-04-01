@@ -65,7 +65,7 @@ import { HttpClient } from '@angular/common/http';
     <!-- Société -->
     <mat-card style="margin-bottom:20px; border-left:4px solid #D4A017;">
       <mat-card-content style="padding:20px;">
-        <h3 style="margin:0 0 16px; color:#1A1A2E; font-size:15px;">🏢 Société destinataire</h3>
+        <h3 style="margin:0 0 16px; color:#1A1A2E; font-size:15px;">🏢 Société bénéficiaire</h3>
         <mat-form-field appearance="outline" style="width:100%;">
           <mat-label>Nom de la société</mat-label>
           <input matInput formControlName="societe" placeholder="Ex: SOMISA, IAMGOLD, Endeavour...">
@@ -120,7 +120,6 @@ import { HttpClient } from '@angular/common/http';
     <!-- Boutons -->
     <div style="display:flex; gap:12px; flex-wrap:wrap;">
 
-      <!-- Sauvegarder -->
       <button mat-raised-button type="button"
               [disabled]="isSaving"
               (click)="sauvegarder()"
@@ -129,7 +128,6 @@ import { HttpClient } from '@angular/common/http';
         {{ isSaving ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Sauvegarder') }}
       </button>
 
-      <!-- Télécharger PDF -->
       <button mat-raised-button type="button"
               [disabled]="isDownloading"
               (click)="telecharger()"
@@ -139,7 +137,6 @@ import { HttpClient } from '@angular/common/http';
         {{ form.get('langue')?.value === 'en' ? '(EN)' : '(FR)' }}
       </button>
 
-      <!-- Annuler -->
       <button mat-button type="button" routerLink="/offres" style="color:#888;">
         Annuler
       </button>
@@ -151,10 +148,10 @@ import { HttpClient } from '@angular/common/http';
   `
 })
 export class OffreFormComponent implements OnInit {
-  form:           FormGroup;
-  isEditMode    = false;
-  offreId?:       number;
-  isSaving      = false;
+  form:          FormGroup;
+  isEditMode   = false;   // ✅ isEditMode (pas estEditMode)
+  offreId?:      number;
+  isSaving     = false;
   isDownloading = false;
   errorMessage  = '';
   successMessage = '';
@@ -165,9 +162,9 @@ export class OffreFormComponent implements OnInit {
   ];
 
   constructor(
-    private fb:    FormBuilder,
-    private http:  HttpClient,
-    private route: ActivatedRoute,
+    private fb:     FormBuilder,
+    private http:   HttpClient,
+    private route:  ActivatedRoute,
     private router: Router
   ) {
     this.form = this.fb.group({
@@ -221,8 +218,8 @@ export class OffreFormComponent implements OnInit {
     const fv = this.form.getRawValue();
     return {
       langue:        fv.langue,
-      societe:       fv.societe?.trim() || '',
-      texte_custom:  fv.texte_custom?.trim() || '',
+      societe:       (fv.societe || '').trim(),
+      texte_custom:  (fv.texte_custom || '').trim(),
       destinataires: fv.destinataires.filter(
         (d: any) => (d.nom || '').trim() || (d.fonction || '').trim()
       ),
@@ -240,8 +237,7 @@ export class OffreFormComponent implements OnInit {
     req.subscribe({
       next: () => {
         this.isSaving = false;
-        this.successMessage = this.isEditMode ? 'Offre mise à jour !' : 'Offre sauvegardée !';
-        setTimeout(() => this.router.navigate(['/offres']), 1000);
+        this.router.navigate(['/offres']);  // ✅ Redirige vers la liste
       },
       error: () => {
         this.errorMessage = "Erreur lors de l'enregistrement.";
@@ -255,8 +251,7 @@ export class OffreFormComponent implements OnInit {
     this.errorMessage  = '';
     const payload = this.getPayload();
 
-    // ✅ URL corrigée : /api/v1/offres/generer-pdf/ au lieu de /api/v1/offres/generer/
-    this.http.post('/api/v1/offres/generer-pdf/', payload, {
+    this.http.post('/api/v1/offres/generer/', payload, {
       responseType: 'blob', observe: 'response'
     }).subscribe({
       next: (resp) => {
@@ -269,7 +264,7 @@ export class OffreFormComponent implements OnInit {
         a.click();
         window.URL.revokeObjectURL(url);
         this.isDownloading  = false;
-        this.successMessage = 'PDF téléchargé !';
+        this.successMessage = 'PDF téléchargé avec succès !';
         setTimeout(() => this.successMessage = '', 3000);
       },
       error: () => {
